@@ -31,23 +31,49 @@ p_load(
 ```{r}
 dat <- read_excel("default of credit card clients.xls")
 dat <- janitor::row_to_names(dat,1)
-dat <- dat %>% janitor::clean_names()
+
+head(dat)
+str(dat)
+
 ```
 
+# Data Cleaning
+Before diving into EDA, we . We also explore any missing values and find none.
+```{r}
+#clean column names
+data <- dat %>% janitor::clean_names()
+
+colnames(data) 
+
+#convert factor features
+factor_features <- c('sex','education','marriage','default_payment_next_month')
+data[factor_features] <- lapply(data[factor_features], function(x) as.factor(x))
+
+numeric_features <- c("limit_bal","pay_0",                  
+"pay_2"        ,               "pay_3"           ,         "pay_4"                     
+,"pay_5"       ,               "pay_6"           ,           "bill_amt1"                 
+,"bill_amt2"   ,               "bill_amt3"       ,           "bill_amt4"                 
+,"bill_amt5"   ,               "bill_amt6"       ,           "pay_amt1"                  
+,"pay_amt2"    ,               "pay_amt3"        ,           "pay_amt4"                  
+,"pay_amt5"    ,               "pay_amt6")
+
+data[numeric_features] <- lapply(data[numeric_features], function(x) as.numeric(x))
+
+#drop id
+cred_data <- data %>% 
+    select(-id) 
+
+#target class proportions
+target <- cred_data$default_payment_next_month
+prop.table(table(target)) 
+  
+```
 
 # Partition the data set into training and test sets
 
 Before splitting the data set into training (75%) and testing (25%) sets, we inspect class balance to detect any imbalance in the target class which we attempt to correct. We also drop the `ID` features as it's irrelavant.
 
 ```{r split data}
-# drop id and convert class to factor
-cred_data <- dat %>% 
-    select(-id) %>% 
-    mutate(class = as.factor(default_payment_next_month))
-
-target <- cred_data$default_payment_next_month
-prop.table(table(target)) 
-  
 # split into training and test data sets
 training_rows <- cred_data %>% 
     select(default_payment_next_month) %>% 
@@ -57,8 +83,7 @@ training_rows <- cred_data %>%
 training_data <- cred_data %>% slice(training_rows)
 test_data <- cred_data %>% slice(-training_rows)
 
-
-
+#testing statified split proportions
 train_counts <- training_data$default_payment_next_month
 prop.table(table(train_counts)) 
 
@@ -69,19 +94,82 @@ prop.table(table(test_counts))
 
 # Exploratory analysis on the training data set
 
-> Tiff's words "To look at whether each of the predictors might be useful to predict the tumour class, we plotted the distributions of each predictor from the training data set and coloured the distribution by class (benign: blue and malignant: orange). In doing this we see that class distributions for all of the mean and max predictors for all the measurements overlap somewhat, but do show quite a difference in their centres and spreads. This is less so for the standard error (se) predictors. In particular, the standard errors of fractal dimension, smoothness, symmetry and texture look very similar in both the distribution centre and spread. Thus, we might choose to omit these from our model."
 
-```{r predictor distributions, fig.width=8, fig.height=10, fig.cap="Distribution of training set predictors for the benign (B) and malignant (M) tumour cases."}
-training_data %>% 
-  gather(key = predictor, value = value, -class) %>% 
-  mutate(predictor = str_replace_all(predictor, "_", " ")) %>% 
-  ggplot(aes(x = value, y = class, colour = class, fill = class)) +
-      facet_wrap(. ~ predictor, scale = "free", ncol = 4) +
-      geom_density_ridges(alpha = 0.8) +
-      scale_fill_tableau() +
-      scale_colour_tableau() +
-      guides(fill = FALSE, color = FALSE) +
-      theme(axis.title.x = element_blank(),
-            axis.title.y = element_blank())
+## Correlation Analysis
+```{r corr}
+if (! require ("PerformanceAnalytics" )){
+  install.packages ("PerformanceAnalytics")
+  library (PerformanceAnalytics)
+}
+if (! require ("ggplot2" )){
+  install.packages ("ggplot2")
+  library (ggplot2)
+}
+if (! require ("GGally" )){
+  install.packages ("GGally")
+  library (GGally)
+}
+if (! require ("ggpubr" )){
+  install.packages ("ggpubr")
+  library (ggpubr)
+}
+
+numeric_df <- cred_data
+numeric_df$default_payment_next_month <- as.numeric(numeric_df$default_payment_next_month)
+#numeric_df <- numeric_df %>%
+numeric_df$age <- as.numeric(numeric_df$age)
+numeric_df$sex <- NULL
+numeric_df$education <- NULL
+numeric_df$marriage <- NULL
+
+#ggcor plot
+chart.Correlation(numeric_df, histogram=TRUE, method = "pearson", col="blue", pch=1, main="all")
+``` 
+
+
+## Feature Importance
+
+```{r best predictors load}
+if (! require ("FSinR" )){
+  install.packages ("FSinR")
+  library ( FSinR )
+}
+if (! require ("randomForest" )){
+  install.packages ("randomForest")
+  library ( randomForest )
+}
+
+if (! require ("VSURF")){
+  install.packages ("VSURF")
+  library (VSURF)
+}
+``` 
+
+
+```{r best predictors}
+#best_features <- selectKBest(training_data,'default_payment_next_month',roughsetConsistency,10)
+#best_features$featuresSelected
+#best_features$bestFeatures
+#best_features$valuePerFeature
+
+training_data$class <- NULL
+
+training_data$default_payment_next_month <- as.factor(training_data$default_payment_next_month)
+#Variable Importance using Random Forests 
+
+#method 1 - using library(RandomForest)
+rf <- randomForest(default_payment_next_month ~ ., data=training_data, ntree=50, mtry=2, importance=TRUE)
+#50 is optimal number of trees
+rf
+varImpPlot(rf) 
+
+#method 2 - using library (VSURF)
+
+#rf_vsruf <- VSURF(default_payment_next_month ~ ., data=training_data, ntree=50, mtry=2)  #long run-time
+#print(rf_vsruf$varselect.pred)
+#summary(rf_vsruf$varselect.pred)
+#plot(rf_vsruf)
 ```
+
+
 
