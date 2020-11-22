@@ -10,25 +10,28 @@ The data set for this project is sourced from the UCI Machine Learning Repositor
 
 The dataset contains 30,000 observations representing individual customers in Taiwan. Each row contains relevant information about the individual as well as how timely they were with their bill payments and  the corresponding bill amounts for each time period. The bill payment information contains records from April 2005 to September 2005. The data was collected from an important cash and credit card issuing bank in Taiwan.
 
+In the exploratory analysis portion, first we explore the data to observe any missing values or outliers. Next, we partition the data set into training and testing portions. We examine correlation amongst features and with the target response. Further, we investigate feature importance using various methods such as using a random forest classifier. The results are documented [here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/eda/project_eda.md).
 
-``<add section on analysis>``
-
+Our logistic regression classifier performed fairly well on the test data with accuracy of 0.82. The AUC score of 0.724 is fairly good. On the 7500 test data cases, it correctly predicted 6155 default payments. However, many default payments were not detected. As such, we continue to investigate way to improve the models accuracy.
 
 ## Usage
 To replicate this analysis, clone the GitHub repository, install dependencies and run the following command from the root directory of this project:
 
- ``<add line here>``
+ ``<python src/Download_data.py --url=http://archive.ics.uci.edu/ml/machine-learning-databases/00350/default%20of%20credit%20card%20clients.xls --saving_path=data/default_credit_card.csv>``
 
 
 ## Dependencies
-- Python ___ and Python packages:
+- Python 3.8.3 and Python packages:
     - docopt=0.6.2
-    ...
+    - pandas=1.0.5
+    - xlrd=1.2.0
     
-- R version ___ and R packages:
-    - knitr=____
-    - tidyverse=____
-    ...
+- R version 4.0.2 and R packages:
+    - knitr=1.29
+    - tidyverse=1.3.0
+    - caret=6.0.86
+    - readxl=1.3.1
+    - pacman=0.5.1
 
 ## License
 The materials here are licensed under the MIT License(Copyright (c) 2020 GROUP 12). If you are re-using the materials, please provide attribution and link to this webpage. 
