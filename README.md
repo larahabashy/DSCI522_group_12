@@ -21,14 +21,16 @@ To replicate this analysis, clone the GitHub repository, install dependencies an
 
 
 ## Dependencies
-- Python ___ and Python packages:
+- Python 3.8.3 and Python packages:
     - docopt=0.6.2
     ...
     
-- R version ___ and R packages:
-    - knitr=____
-    - tidyverse=____
-    ...
+- R version 4.0.2 and R packages:
+    - knitr=1.29
+    - tidyverse=1.3.0
+    - caret=6.0.86
+    - readxl=1.3.1
+    - pacman=0.5.1
 
 ## License
 The materials here are licensed under the MIT License(Copyright (c) 2020 GROUP 12). If you are re-using the materials, please provide attribution and link to this webpage. 
