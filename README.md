@@ -17,13 +17,14 @@ Our logistic regression classifier performed fairly well on the test data with a
 ## Usage
 To replicate this analysis, clone the GitHub repository, install dependencies and run the following command from the root directory of this project:
 
- ``<add line here>``
+ ``<python src/Download_data.py --url=http://archive.ics.uci.edu/ml/machine-learning-databases/00350/default%20of%20credit%20card%20clients.xls --saving_path=data/default_credit_card.csv>``
 
 
 ## Dependencies
 - Python 3.8.3 and Python packages:
     - docopt=0.6.2
-    ...
+    - pandas=1.0.5
+    - xlrd=1.2.0
     
 - R version 4.0.2 and R packages:
     - knitr=1.29
