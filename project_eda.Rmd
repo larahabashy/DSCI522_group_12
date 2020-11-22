@@ -1,13 +1,10 @@
 ---
-title: "project_eda"
-author: "Lara Habashy"
+title: "Exploratory data analysis of the default of credit card clients data set"
+author: "Group_12"
 date: "20/11/2020"
 output: html_document
----
----
-title: "Exploratory data analysis of the Wisconsin Breast Cancer data set"
-output: github_document
-bibliography: ../doc/breast_cancer_refs.bib
+ # md_document:
+  #  variant: markdown_github
 ---
 
 ```{r setup, include=FALSE}
@@ -27,19 +24,28 @@ p_load(
 )
 ```
 
-# Load the data
-```{r}
+# Load the data & Preliminary Analysis
+
+The data set consists of 25 features and 1 discrete response variable called default_payment_next_month. 
+
+```{r load data}
 dat <- read_excel("default of credit card clients.xls")
 dat <- janitor::row_to_names(dat,1)
 
 head(dat)
 str(dat)
-
+summary(dat)
 ```
 
+In our data set, there are 30,000 observations of distinct credit card clients.
+The mean value for the amount of a given credit card limit is $167,484. There is some imbalance in the target class, as well as education level and marital status. Furthermore, the average age of clients is around 36.The target variable, default_payment_next_month has a value of 1 for default and 0 for non default.
+
+
 # Data Cleaning
-Before diving into EDA, we . We also explore any missing values and find none.
-```{r}
+
+Before diving into EDA, we convert features into the best format for our application. We also explore any missing values and find none. Therefore, no imputation is required. However, we can consider applying a scaling transformation to the numeric features in the data set.
+
+```{r clean data}
 #clean column names
 data <- dat %>% janitor::clean_names()
 
@@ -50,7 +56,7 @@ factor_features <- c('sex','education','marriage','default_payment_next_month')
 data[factor_features] <- lapply(data[factor_features], function(x) as.factor(x))
 
 numeric_features <- c("limit_bal","pay_0",                  
-"pay_2"        ,               "pay_3"           ,         "pay_4"                     
+"pay_2"        , "pay_3"           ,         "pay_4"                     
 ,"pay_5"       ,               "pay_6"           ,           "bill_amt1"                 
 ,"bill_amt2"   ,               "bill_amt3"       ,           "bill_amt4"                 
 ,"bill_amt5"   ,               "bill_amt6"       ,           "pay_amt1"                  
@@ -94,7 +100,6 @@ prop.table(table(test_counts))
 
 # Exploratory analysis on the training data set
 
-
 ## Correlation Analysis
 ```{r corr}
 if (! require ("PerformanceAnalytics" )){
@@ -116,7 +121,7 @@ if (! require ("ggpubr" )){
 
 numeric_df <- cred_data
 numeric_df$default_payment_next_month <- as.numeric(numeric_df$default_payment_next_month)
-#numeric_df <- numeric_df %>%
+
 numeric_df$age <- as.numeric(numeric_df$age)
 numeric_df$sex <- NULL
 numeric_df$education <- NULL
@@ -126,8 +131,17 @@ numeric_df$marriage <- NULL
 chart.Correlation(numeric_df, histogram=TRUE, method = "pearson", col="blue", pch=1, main="all")
 ``` 
 
+Looking at the correlation plot, we see that the features pay_1, ..., pay_6 are the most correlated with the target variable default_payment_next_month. Demographic features in general seem to be not highly correlated to our response but rather the features tracking the monthly bill amounts. The lowest correlated features is limit_balance, which we consider applying a standardization transformation to. 
 
-## Feature Importance
+
+## Feature Analysis
+
+Next, we consider a feature selection method that allows for individual evaluation of each
+feature. We apply the function selectKBest on the full dataset to select a subset for
+modelling that utilizes the most significant features. To determine an optimal number of
+features, or the best k, that will yield that strongest predictive powers, we first look at
+the value per features attribute of all the features in the model. The top feature’s value,
+bill_amt1 is seen to be 82.1% and the least valuable feature. We consider selecting features with a value of approximately at least 70%.
 
 ```{r best predictors load}
 if (! require ("FSinR" )){
@@ -147,21 +161,23 @@ if (! require ("VSURF")){
 
 
 ```{r best predictors}
-#best_features <- selectKBest(training_data,'default_payment_next_month',roughsetConsistency,10)
-#best_features$featuresSelected
-#best_features$bestFeatures
-#best_features$valuePerFeature
+best_features <- selectKBest(training_data,'default_payment_next_month',roughsetConsistency,10)
+best_features$featuresSelected
+best_features$valuePerFeature
+```
 
-training_data$class <- NULL
+### Variable Importance 
 
-training_data$default_payment_next_month <- as.factor(training_data$default_payment_next_month)
+The first approach we take to evaluate variable importance uses accuracy and gini importance.
+```{r var imp}
 #Variable Importance using Random Forests 
-
 #method 1 - using library(RandomForest)
 rf <- randomForest(default_payment_next_month ~ ., data=training_data, ntree=50, mtry=2, importance=TRUE)
 #50 is optimal number of trees
 rf
 varImpPlot(rf) 
+pred1=predict(rf,newdata=test_data)
+confusionMatrix(pred1, test_data$default_payment_next_month) 
 
 #method 2 - using library (VSURF)
 
@@ -170,6 +186,62 @@ varImpPlot(rf)
 #summary(rf_vsruf$varselect.pred)
 #plot(rf_vsruf)
 ```
+The importance of each variable in the random forest model is displayed in the figure
+above. The importance function outputs a list of features, along with their corresponding
+Mean Decrease Gini and Mean Decrease Accuracy values. Mean Decrease Accuracy suggests that if the variable is not important, then rearranging its values should not degrade the model’s prediction accuracy. The features at the top of the figure have the most predictive power in the model. Eliminating these features would significantly decrease the predictive power of the model. Once again here, we observe that demographic features has very little significance in the data set.
 
+The second approach we take to evaluate variable importance uses the R package VSURF.
+The recently publish library (2019) implements a 3-step feature selection process using random forests. For the sake of time, the team has decided to omit the work on VSURF variable importance until time permits.
 
+Next we examine the distribution of the most and least important features. The plot suggests education is an interesting feature that is highly imbalanced.
 
+```{r plots}
+ggplot(training_data, aes(as.numeric(age), fill = default_payment_next_month)) + 
+  geom_histogram(binwidth = 6) + 
+  facet_grid(.~as.numeric(education)) + 
+  theme_fivethirtyeight()
+
+ggplot(training_data, aes(pay_0, fill = default_payment_next_month)) + 
+  geom_histogram(binwidth = 1) + 
+  facet_grid(.~as.numeric(education)) + 
+  theme_excel()
+```
+
+### Modeling Logistic Regression
+
+```{r glm, warning=FALSE}
+if (! require ("ROCR")){
+  install.packages ("ROCR")
+  library (ROCR)
+}
+library (ROCR)
+glm_mode <- glm(default_payment_next_month ~ ., data=training_data, family=binomial)
+summary(glm_mode)
+
+#drop target variable from testing set
+test.x <-  test_data %>% 
+  select(-default_payment_next_month)
+
+test_data$glm_score <- predict(glm_mode, type="response", test.x)
+pred <- prediction(test_data$glm_score, test_data$default_payment_next_month)
+glm.perf <- performance(pred, "tpr", "fpr")
+
+#box plot
+test_data %>% 
+  ggplot(aes(default_payment_next_month, glm_score)) +
+  geom_boxplot() + 
+  ggtitle("Logistic Regression Classifier - Scores distribution") +
+  xlab("Default Payment") +
+  ylab("Prediction")
+
+# ROC
+plot(glm.perf, lty=1, col="red", main="Logistic Regression ROC curve")
+
+auc.perf <- performance(pred, measure = "auc") 
+
+# Get accuracy and cutoff
+acc.perf <- performance(pred, measure = "acc")
+acc <- slot(acc.perf, "y.values")[[1]][which.max( slot(acc.perf, "y.values")[[1]] )]
+```
+
+The logistic regression classifier performed faily well on the test data with accuracy of 0.82 and AUC score of 0.724. However, many default payments were not detected. As such, we continue to investigate way to improve the models accuracy. 
