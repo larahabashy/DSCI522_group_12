@@ -1,5 +1,5 @@
 # Credit Card Default Predictor
-Authors: Hazel Jiang, Lara Habashy, Paniz Fazlali, Selma Duric
+Authors: Hazel Jiang, Lara Habashy, Selma Duric
 
 UBC Master of Data Science program, DSCI 522 data analysis project.
 
