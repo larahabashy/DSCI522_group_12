@@ -44,8 +44,8 @@ main <- function(input, out_dir){
     
   new_df <- cbind(df, one_hot)
   new_df <- new_df %>% 
-    janitor::clean_names() %>% 
-    select(-c(one_hot, sex, education, marriage))
+    janitor::clean_names()  %>% 
+    select(-c(sex, education, marriage))
   
   #rename column and drop id feature
   cred_data <- new_df %>% 
