@@ -24,7 +24,7 @@ main <- function(train, out_dir) {
   training_scaled <- read_feather(train) 
 
   #density plot
-  density_plot <- ggplot(training_data) +
+  density_plot <- ggplot(training_scaled) +
     aes(x = limit_bal,
         fill = default,
         color = default) +
