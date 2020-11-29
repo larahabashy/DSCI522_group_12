@@ -1,7 +1,7 @@
-Credit Card Default Predicting
+Credit Card Default Prediction
 ================
-Selma Duric, Lara Habashy, Hazel Jiang
-2020-11-28
+Selma Duric, Lara Habashy, Hazel Jiang</br>
+11/28/2020
 
   - [Summary](#summary)
   - [Introduction](#introduction)
@@ -12,6 +12,15 @@ Selma Duric, Lara Habashy, Hazel Jiang
   - [References](#references)
 
 ## Summary
+
+Here we attempt to apply two machine learning models
+`LogisticRegression` and `RandomForest` on a credit card default data
+set and find the better model with optimized hyperparameter to predict
+if a client is likely to default payment on the credit card in order to
+lower the risk for banks to issue credit card to more reliable clients.
+`LogisticRegression` performed better compared to `RandomForest`. Our
+best prediction has f1 score of 0.51 with optimzed hyperpameter of
+*C=382* and *class\_weight=‘balanced’*.
 
 ## Introduction
 
@@ -51,13 +60,13 @@ how timely they were with their bill payments and the corresponding bill
 amounts for each time period. The bill payment information contains
 records from April 2005 to September 2005 and each individual have the
 same number of time periods. The data was collected from an important
-cash and credit card issuing bank in Taiwan.We will make our prediction
+cash and credit card issuing bank in Taiwan. We will make our prediction
 based on the features given by the data.
 
 ### Analysis
 
 There are 30,000 observations of distinct credit card clients in this
-data set with each row represents a client. 25 different features are
+data set with each row representing a client. 25 different features are
 included with information of each given client, such as gender, age,
 approved credit limit, education, marital status, their past payment
 history, bill statements, and previous payments for 6 months (April-Sept
@@ -65,7 +74,7 @@ history, bill statements, and previous payments for 6 months (April-Sept
 observation has the same number of time periods.
 [Here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/src/project_eda.md)
 is a more detailed exploratory analysis that explained how we transform
-and use each feature.There exists class imbalance in the data set, and
+and use each feature. There exists class imbalance in the data set, and
 one pattern we found is that people with higher credit card limit are
 more likely to default their payment.
 
@@ -83,8 +92,8 @@ Clients
 </div>
 
 Another pattern we found is that there exists a correlation between
-education level are default payment. Will analyzing this feature further
-in our machine learning model.
+education level and default payment. We will analyze this feature
+further in our machine learning model.
 
 <div class="figure">
 
@@ -98,34 +107,36 @@ Figure 2. Correlation Between Educational level and Default Payment
 
 </div>
 
-Both `LogisticRegression` and `RandomForest` model from
-scikit-learn(Pedregosa et al. 2011) will be used to build this
-classification model to predict whether a client will default on the
-credit card payment. Because of the class imbalance we have, we will
-look at test accuracy as well as f1 scores on both model. For each
-model, the appropriate hyperparameters were chosen using 5-fold cross
-validation. The R(R Core Team 2020) and Python(Van Rossum and Drake
-2009) programming languages and the following R and Python packages were
-used to perform the analysis: docopt(de Jonge 2018), feather(Wickham
-2019), knitr(Xie 2020), tidyverse(Wickham 2017)and Pandas(team 2020)
+Both a linear classification model `LogisticRegression` and an ensemble
+decision tree classification model `RandomForest` from
+scikit-learn(Pedregosa et al. 2011) will be used to build this
+classification model to see which better predicts whether a client will
+default on the credit card payment. Because of the class imbalance we
+have, we will look at test accuracy as well as f1 scores on both models.
+For each model, the appropriate hyperparameters were chosen using 5-fold
+cross validation. The R(R Core Team 2020) and Python(Van Rossum and
+Drake 2009) programming languages and the following R and Python
+packages were used to perform the analysis: docopt(de Jonge 2018),
+feather(Wickham 2019), knitr(Xie 2020), tidyverse(Wickham 2017)and
+Pandas(team 2020).
 
 The code used to perform the analysis and create this report can be
 found [here](https://github.com/UBC-MDS/DSCI522_group_12/tree/main/src)
 
 ## Results & Discussion
 
-To look at which model is better for the prediction, we first compare
-the two models with default hyperparameters. We used `DummyRegression`
-with `strategy='prior'` as our baseline. Although it has an accuracy
-score of 0.78, it is not very reliable because we have class imbalance
-in the data set and f1 score is more important in our prediction. Our
-baseline has f1 score of 0, which is not good. On the other hand, both
+To look at which model is better for prediction, we first compare the
+two models with default hyperparameters. We used `DummyRegression` with
+`strategy='prior'` as our baseline. Although it has an accuracy score of
+0.78, it is not very reliable because we have class imbalance in the
+data set and f1 score is more important in our prediction. Our baseline
+has f1 score of 0, which is not good. On the other hand, both
 `RandomForest` and `LogisticRegression` has better score on f1.
 `RandomForest` has a very high f1 on the training set, but the score is
 low on the validation set, and there exists a huge gap between the two
 scores, which means we have an overfitting problem. On the other hand,
 `LogisticRegression` has very similar training and validation f1 scores,
-it has a higher f1 score compare to `RandomForest` model. Therefore, we
+it has a higher f1 score compared to `RandomForest` model. Therefore, we
 believe `LogisticRegression` is a better model to use for prediction.
 
 | X1                         | Baseline | Random Forest | Logistic Regression |
@@ -135,21 +146,22 @@ believe `LogisticRegression` is a better model to use for prediction.
 | mean\_f1\_train            |   0.0000 |        0.9988 |              0.5125 |
 | mean\_f1\_validation       |   0.0000 |        0.4756 |              0.5109 |
 
-Table 1. This is a comparison betweeen accuracy and f1 with default
-hyperparameters for each model
+Table 1.Comparison between accuracy and f1 with default hyperparameters
+for each model
 
-Then we did hyperparameter tuning for both models and compare the
-results with previous table. The hyperparameters we chose for
-`RandomForest` is `n_estimators` (low=10, high=300) and `max_depth`
-(low=1, high=5000). The hyperparameters for `LogisticRegression` is
-`class_weight` (“balanced” vs “none”) and `C` (low=0, high=1000). We
-only focus on f1 score in this comparasion since it is more relavant to
-the issue we care about. We ranked the f1 score from high to low. As
-indicated in the table, our best f1 score is 0.51 with hyperparameter
-*C=382* and *class\_weight=‘balanced’*. The results also show that the
-top 3 f1 scores are all come from `LogisricRegression`. This finding
-further confirmed our results from previous table that
-`LogisticRegression` is a better model to use than `RandomForest`.
+Since the validation scores were comparable, we decided to tune
+hyperparameters for both models and compare the results with the
+previous table. The hyperparameters we chose for `RandomForest` is
+`n_estimators` (low=10, high=300) and `max_depth` (low=1, high=5000).
+The hyperparameters for `LogisticRegression` is `class_weight`
+(“balanced” vs “none”) and `C` (low=0, high=1000). We only focus on f1
+score in this comparasion since it is more relavant to the issue we care
+about. We ranked the f1 score from high to low. As indicated in the
+table, our best f1 score is 0.51 with hyperparameter *C=382* and
+*class\_weight=‘balanced’*. The results also show that the top 3 f1
+scores are all come from `LogisricRegression`. This finding further
+confirmed our results from previous table that `LogisticRegression` is a
+better model to use than `RandomForest`.
 
 | mean f1 score | params                                     | model              |
 | ------------: | :----------------------------------------- | :----------------- |
@@ -164,8 +176,7 @@ further confirmed our results from previous table that
 |     0.3958155 | {‘C’: 158, ‘class\_weight’: ‘none’}        | LogisticRegression |
 |     0.3958155 | {‘C’: 596, ‘class\_weight’: ‘none’}        | LogisticRegression |
 
-Table 2. This is the result of f1 score with optimized hyperpamaters for
-each model
+Table 2. F1 score with optimized hyperpamaters for each model
 
 Based on the result above, we find that although `LogisticRegression` is
 a better model to use, the f1 score is only around 0.5. It is not a very
@@ -185,14 +196,6 @@ threshold of the model.
 
 de Jonge, Edwin. 2018. *Docopt: Command-Line Interface Specification
 Language*. <https://CRAN.R-project.org/package=docopt>.
-
-</div>
-
-<div id="ref-scikit-learn">
-
-Pedregosa, F., G. Varoquaux, A. Gramfort, V. Michel, B. Thirion, O.
-Grisel, M. Blondel, et al. 2011. “Scikit-Learn: Machine Learning in
-Python.” *Journal of Machine Learning Research* 12: 2825–30.
 
 </div>
 
