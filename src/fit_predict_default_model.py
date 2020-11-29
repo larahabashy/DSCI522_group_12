@@ -4,12 +4,13 @@
 '''Fits pre-processed data on baseline, Decision Tree and Logistic Regression models.
 Saves results in output file.
 
-Usage: src/fit_predict_default_model.py --train_data=<train_data> --test_data=<test_data> --out_dir=<out_dir>
+Usage: src/fit_predict_default_model.py --train_data=<train_data> --test_data=<test_data> --hp_out_dir=<hp_out_dir> --prelim_results_dir=<prelim_results_dir>
 
 Options:
 --train_data=<train_data>   Path to training data file in feather format.
 --test_data=<test_data>     Path to test data file in feather format.
---out_dir=<out_dir>         Path from root (including filename) where to save results as csv.
+--prelim_results_dir=<prelim_results_dir> Path from root (incl. filename) where to save results from initial models.
+--hp_out_dir=<hp_out_dir>   Path from root (incl. filename) where to save results from hyperparameter optimization as csv.
 '''
 
 # import libraries
@@ -32,7 +33,7 @@ from scipy.stats import randint
 
 opt = docopt(__doc__)
 
-def main(train_data, test_data, out_dir):
+def main(train_data, test_data, out_dir, prelim_results_dir):
     # read in data sets
     train_df = pd.read_feather(train_data)
     train_df.loc[:,'sex_1':'default'] = train_df.loc[:,'sex_1':'default'].astype('int')
@@ -42,14 +43,17 @@ def main(train_data, test_data, out_dir):
     test_df.loc[:,'sex_1':'default'] = test_df.loc[:,'sex_1':'default'].astype('int')
     X_test, y_test = test_df.drop(columns='default'), test_df['default']
 
-    predict_df, best_model = prediction(X_train, y_train)
+    predict_df, best_model, prelim_results = prediction(X_train, y_train)
     test_result = predict_test(X_train, y_train, X_test, y_test, best_model)
 
     try:
         predict_df.to_csv(out_dir, index=False)
+        prelim_results.to_csv(prelim_results_dir)
     except:
         os.makedirs(os.path.dirname(out_dir))
         predict_df.to_csv(out_dir, index=False)
+        os.makedirs(os.path.dirname(prelim_results_dir))
+        prelim_results.to_csv(prelim_results_dir)
 
 
 def prediction(X_train, y_train):
@@ -68,6 +72,8 @@ def prediction(X_train, y_train):
         scoring results of RandomForestClassifier() and LogisticRegression() hyperparameter optimization.
     best_model: scikit-learn classification model
         best model chosen to use for testing
+    results_dict: dataframe
+        scoring results of models based on chosen scoring methods with default hyperparameters
     """
     assert X_train.shape[0] == y_train.shape[0], "data sets not the same size"
     results_dict = {}
@@ -92,7 +98,7 @@ def prediction(X_train, y_train):
     logreg_pipeline = make_pipeline(LogisticRegression(max_iter=300, class_weight="balanced"))
     scores = cross_validate(logreg_pipeline, X_train, y_train, return_train_score=True, scoring=scoring)
     store_results("Logistic Regression", scores, results_dict)
-    pd.DataFrame(results_dict)
+    results_dict= pd.DataFrame(results_dict)
 
     print(results_dict)
 
@@ -102,7 +108,7 @@ def prediction(X_train, y_train):
         "n_estimators": scipy.stats.randint(low=10, high=300),
         "max_depth": scipy.stats.randint(low=1, high=5000)
     }
-    random_search = RandomizedSearchCV(RandomForestClassifier(), param_dist, n_iter=5, cv=5, random_state=120, scoring='f1')
+    random_search = RandomizedSearchCV(RandomForestClassifier(), param_dist, n_iter=5, cv=5, random_state=120, scoring=scoring[0])
     random_search.fit(X_train, y_train)
 
     best_score_rf = random_search.best_score_
@@ -116,22 +122,23 @@ def prediction(X_train, y_train):
         "class_weight": ["balanced", "none"],
         "C": scipy.stats.randint(low=0, high=1000)
     }
-    random_search = RandomizedSearchCV(LogisticRegression(max_iter=600), param_dist, n_iter=5, cv=5, random_state=120, scoring='f1')
+    random_search = RandomizedSearchCV(LogisticRegression(max_iter=600), param_dist, n_iter=5, cv=5, random_state=120, scoring=scoring[0])
     random_search.fit(X_train, y_train)
     best_cv_logr = random_search.cv_results_
     best_hp_log = random_search.best_estimator_
     log_reg_df = pd.DataFrame(best_cv_logr)[['mean_test_score', 'params']]
     log_reg_df['model'] = 'LogisticRegression'
 
-    # Compile results & export to csv
+    # Compile results of hyperparameter optimization
     hyperparam_df = hyperparam_df.append(log_reg_df).sort_values('mean_test_score', ascending=False).reset_index(drop=True)
-
+    column_test_name = "mean " + scoring[0] +" score"
+    hyperparam_df = hyperparam_df.rename(columns={'mean_test_score': column_test_name})
     # Pick best classifier
     if hyperparam_df["model"][0] == 'RandomForest':
         best_model = best_est_rf
     else: best_model = best_hp_log
 
-    return hyperparam_df, best_model
+    return hyperparam_df, best_model, results_dict
 
 
 
@@ -189,4 +196,4 @@ def store_results(model, scores, results_dict):
     }
 
 if __name__ == "__main__":
-    main(opt["--train_data"], opt["--test_data"], opt["--out_dir"])
+    main(opt["--train_data"], opt["--test_data"], opt["--hp_out_dir"], opt["--prelim_results_dir"])

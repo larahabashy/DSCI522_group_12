@@ -1,0 +1,11 @@
+mean f1 score,params,model
+0.5105467937509438,"{'C': 382, 'class_weight': 'balanced'}",LogisticRegression
+0.5103728808770104,"{'C': 679, 'class_weight': 'balanced'}",LogisticRegression
+0.5102954666668419,"{'C': 559, 'class_weight': 'balanced'}",LogisticRegression
+0.4770697459749054,"{'max_depth': 946, 'n_estimators': 161}",RandomForest
+0.4732701194650283,"{'max_depth': 1793, 'n_estimators': 168}",RandomForest
+0.4712084891255244,"{'max_depth': 560, 'n_estimators': 94}",RandomForest
+0.46651160869743113,"{'max_depth': 1408, 'n_estimators': 43}",RandomForest
+0.44238043726889337,"{'max_depth': 736, 'n_estimators': 20}",RandomForest
+0.39581547873324474,"{'C': 158, 'class_weight': 'none'}",LogisticRegression
+0.39581547873324474,"{'C': 596, 'class_weight': 'none'}",LogisticRegression
