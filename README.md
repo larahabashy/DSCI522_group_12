@@ -23,7 +23,7 @@ To replicate this analysis, clone the GitHub repository, install dependencies an
 
 ``Rscript src/eda_cred.r --train=data/processed/training.feather --out_dir=results``
 
-``python src/fit_predict_default_model.py --train_data=“data/processed/training.feather” --test_data=“data/processed/test.feather” --out_dir=“results/prediction_results.csv”``
+``python src/fit_predict_default_model.py --train_data="data/processed/training.feather" --test_data="data/processed/test.feather" --hp_out_dir="results/prediction_hp_results.csv" --prelim_results_dir="results/prediction_prelim_results.csv"``
 
 
 ## Dependencies
