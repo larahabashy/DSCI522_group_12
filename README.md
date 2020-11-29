@@ -25,6 +25,9 @@ To replicate this analysis, clone the GitHub repository, install dependencies an
     - docopt=0.6.2
     - pandas=1.0.5
     - xlrd=1.2.0
+    - pyarrow=2.0.0
+    - scikit-learn=0.20.4
+    - scipy=1.5.2
     
 - R version 4.0.2 and R packages:
     - knitr=1.29
@@ -32,6 +35,7 @@ To replicate this analysis, clone the GitHub repository, install dependencies an
     - caret=6.0.86
     - readxl=1.3.1
     - pacman=0.5.1
+    - feather=0.3.5
 
 ## License
 The materials here are licensed under the MIT License(Copyright (c) 2020 GROUP 12). If you are re-using the materials, please provide attribution and link to this webpage. 
