@@ -20,18 +20,18 @@ data/processed/training.feather data/processed/test.feather : data/clean/trainin
 		Rscript src/pre_process_cred.r --train=data/clean/training.feather --test=data/clean/test.feather --out_dir=data/processed
 
 # generate EDA plots 
-results/correlation_plot.png results/density_plot.png results/education_histogram.png : data/clean/training.feather data/clean/test.feather
-		Rscript src/eda_cred.r --train=data/clean/training.feather -train_scaled=data/processed/training.feather --out_dir=results
+results/figures/correlation_plot.png results/figures/density_plot.png results/figures/education_histogram.png : src/eda_cred.R data/clean/training.feather data/clean/test.feather
+		Rscript src/eda_cred.r --train=data/clean/training.feather --train_scaled=data/processed/training.feather --out_dir=results/figures
 
 # train and make predictions
 results/prediction_hp_results.csv results/prediction_prelim_results.csv : src/fit_predict_default_model.py data/processed/training.feather data/processed/test.feather
-		python src/fit_predict_default_model.py --train_data="data/processed/training.feather" --test_data="data/processed/test.feather" --hp_out_dir="results/prediction_hp_results.csv" --prelim_results_dir="results/prediction_prelim_results.csv"
+		python src/fit_predict_default_model.py --train_data="data/processed/training.feather" --test_data="data/processed/test.feather" --hp_out_dir="results/prediction_hp_results.csv" --prelim_results_dir="results/prediction/prediction_prelim_results.csv"
 
 # generate reports
 src/project_eda.md : data/raw/default_of_credit_card_clients.feather 
 		 Rscript -e "markdown::render('src/project_eda.Rmd')"
 
-doc/report.md : results/correlation_plot.png results/density_plot.png results/education_histogram.png results/prediction_hp_results.csv results/prediction_prelim_results.csv 
+doc/report.md : results/figures/correlation_plot.png results/figures/density_plot.png results/figures/education_histogram.png results/prediction_hp_results.csv results/prediction_prelim_results.csv 
     Rscript -e "markdown::render('doc/report.Rmd')"
     
 # remove all targets and newly created directories
