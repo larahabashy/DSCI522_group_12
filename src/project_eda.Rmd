@@ -12,6 +12,8 @@ library(caret)
 library(readxl)
 set.seed(2020)
 library(pacman)
+library(arrow)
+library(here)
 p_load(
   tidyverse, skimr, feather, magrittr, lubridate,
   microbenchmark, tictoc, furrr,
@@ -23,16 +25,9 @@ p_load(
 ```
 
 # Load the data & Preliminary Analysis
-
 ```{r load data}
-raw_data <- read_excel("default of credit card clients.xls")
+raw_data <- arrow::read_feather(here("data", "raw","default_of_credit_card_clients.feather"))
 dat <- janitor::row_to_names(raw_data, 1)
-
-##convert to feather
-#library(feather)
-#convert("default of credit card clients.xls", "default of credit card clients.feather")
-#raw_data <- read_feather("data/default of credit card clients.feather")
-
 head(dat)
 str(dat)
 summary(dat)
@@ -187,9 +182,9 @@ if (! require ("VSURF")){
 
 
 ```{r best predictors}
-best_features <- selectKBest(training_data,'default', roughsetConsistency,10)
-best_features$featuresSelected
-best_features$valuePerFeature
+# best_features <- selectKBest(training_data,'default', roughsetConsistency,10)
+# best_features$featuresSelected
+# best_features$valuePerFeature
 ```
 
 ### Variable Importance 

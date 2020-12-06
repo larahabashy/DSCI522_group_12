@@ -16,14 +16,15 @@ library(feather)
 library(tidyverse)
 library(caret)
 library(docopt)
+library(arrow)
 set.seed(2020)
 
 opt <- docopt(doc)
 main <- function(train, test, out_dir){
   
   # read data and convert default to factor
-  training_data <- read_feather(train) 
-  test_data <- read_feather(test) 
+  training_data <- arrow::read_feather(train) 
+  test_data <- arrow::read_feather(test) 
   
   dmy_train <- dummyVars( ~ sex + education + marriage, data = training_data)
   dmy_test <- dummyVars( ~ sex + education + marriage, data = test_data)

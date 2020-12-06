@@ -19,6 +19,7 @@ library(docopt)
 library(ggthemes)
 #library(graphics)
 library(ggcorrplot)
+library(arrow)
 
 theme_set(theme_minimal())
 
@@ -35,8 +36,8 @@ main <- function(train, train_scaled, out_dir) {
   }
   
   # read data 
-  training_data <- read_feather(train)
-  training_scaled <- read_feather(train_scaled)
+  training_data <- arrow::read_feather(train)
+  training_scaled <- arrow::read_feather(train_scaled)
   
   #density plot
   density_plot <- ggplot(training_scaled) +
