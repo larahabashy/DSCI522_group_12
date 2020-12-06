@@ -17,13 +17,8 @@ Our logistic regression classifier performed fairly well on the test data with a
 ## Usage
 To replicate this analysis, clone the GitHub repository, install dependencies and run the following command from the root directory of this project:
 
- ``<python src/Download_data.py --url=http://archive.ics.uci.edu/ml/machine-learning-databases/00350/default%20of%20credit%20card%20clients.xls --saving_path=data/raw/default_payment_next_month.feather>``
- 
-``Rscript src/pre_process_cred.r --input=data/raw/default_payment_next_month.feather --out_dir=data/processed``
-
-``Rscript src/eda_cred.r --train=data/processed/training.feather --out_dir=results``
-
-``python src/fit_predict_default_model.py --train_data="data/processed/training.feather" --test_data="data/processed/test.feather" --hp_out_dir="results/prediction_hp_results.csv" --prelim_results_dir="results/prediction_prelim_results.csv"``
+- Type `make all` from command line to execute scripts in the src directory.
+- Type `make clean` from command line to clean and remove the results directory.
 
 
 ## Dependencies
