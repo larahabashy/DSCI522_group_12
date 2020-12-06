@@ -17,10 +17,8 @@ Our logistic regression classifier performed fairly well on the test data with a
 ## Usage
 To replicate this analysis, clone the GitHub repository, install dependencies and run the following command from the root directory of this project:
 
- ``make all``
- 
-To clear the generated files and reset the repo, run the following command from the root directory of this project:
-``make clean``
+- Type `make all` from command line to execute scripts in the src directory.
+- To clear the generated files and reset the repo, type `make clean` from command line to clean and remove the results directory.
 
 ## Dependencies
 - Python 3.8.3 and Python packages:
