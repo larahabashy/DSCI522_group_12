@@ -15,13 +15,15 @@ library(feather)
 library(tidyverse)
 library(caret)
 library(docopt)
+library(arrow)
+
 set.seed(2020)
 
 opt <- docopt(doc)
 main <- function(input, out_dir){
   
   # read data and convert default to factor
-  raw_data <- read_feather(input) 
+  raw_data <- arrow::read_feather(input)
   dat <- janitor::row_to_names(raw_data, 1)
   df <- dat %>% janitor::clean_names()
   
