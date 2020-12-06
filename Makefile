@@ -32,6 +32,7 @@ src/project_eda.md : data/raw/default_of_credit_card_clients.feather
 		Rscript -e "rmarkdown::render('src/project_eda.Rmd', 'md_document')"
 
 doc/report.md : results/figures/correlation_plot.png results/figures/density_plot.png results/figures/education_histogram.png results/prediction/prediction_hp_results.csv results/prediction/prediction_prelim_results.csv 
+		echo "6"
 		Rscript -e "rmarkdown::render('doc/report.Rmd', 'md_document')"
     
 # remove all targets and newly created directories

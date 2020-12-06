@@ -1,16 +1,3 @@
-Credit Card Default Prediction
-================
-Selma Duric, Lara Habashy, Hazel Jiang</br>
-11/28/2020
-
-  - [Summary](#summary)
-  - [Introduction](#introduction)
-  - [Methods](#methods)
-      - [Data](#data)
-      - [Analysis](#analysis)
-  - [Results & Discussion](#results-discussion)
-  - [References](#references)
-
 ## Summary
 
 Here we attempt to apply two machine learning models
@@ -78,34 +65,20 @@ and use each feature. There exists class imbalance in the data set, and
 one pattern we found is that people with higher credit card limit are
 more likely to default their payment.
 
-<div class="figure">
-
-<img src="../results/density_plot.png" alt="Figure 1. Density of Credit Limit Between Default Clients and On-time Clients" width="45%" />
-
+<img src="../results/figures/density_plot.png" alt="Figure 1. Density of Credit Limit Between Default Clients and On-time Clients" width="45%" />
 <p class="caption">
-
 Figure 1. Density of Credit Limit Between Default Clients and On-time
 Clients
-
 </p>
-
-</div>
 
 Another pattern we found is that there exists a correlation between
 education level and default payment. We will analyze this feature
 further in our machine learning model.
 
-<div class="figure">
-
-<img src="../results/correlation_plot.png" alt="Figure 2. Correlation Between Educational level and Default Payment" width="45%" />
-
+<img src="../results/figures/correlation_plot.png" alt="Figure 2. Correlation Between Educational level and Default Payment" width="45%" />
 <p class="caption">
-
 Figure 2. Correlation Between Educational level and Default Payment
-
 </p>
-
-</div>
 
 Both a linear classification model `LogisticRegression` and an ensemble
 decision tree classification model `RandomForest` from
@@ -139,12 +112,43 @@ scores, which means we have an overfitting problem. On the other hand,
 it has a higher f1 score compared to `RandomForest` model. Therefore, we
 believe `LogisticRegression` is a better model to use for prediction.
 
-| X1                         | Baseline | Random Forest | Logistic Regression |
-| :------------------------- | -------: | ------------: | ------------------: |
-| mean\_accuracy\_train      |   0.7788 |        0.9995 |              0.7448 |
-| mean\_accuracy\_validation |   0.7788 |        0.8168 |              0.7440 |
-| mean\_f1\_train            |   0.0000 |        0.9988 |              0.5125 |
-| mean\_f1\_validation       |   0.0000 |        0.4756 |              0.5109 |
+<table>
+<caption>Table 1.Comparison between accuracy and f1 with default hyperparameters for each model</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">X1</th>
+<th style="text-align: right;">Baseline</th>
+<th style="text-align: right;">Random Forest</th>
+<th style="text-align: right;">Logistic Regression</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mean_accuracy_train</td>
+<td style="text-align: right;">0.7788</td>
+<td style="text-align: right;">0.9995</td>
+<td style="text-align: right;">0.7448</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mean_accuracy_validation</td>
+<td style="text-align: right;">0.7788</td>
+<td style="text-align: right;">0.8155</td>
+<td style="text-align: right;">0.7440</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mean_f1_train</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.9988</td>
+<td style="text-align: right;">0.5125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mean_f1_validation</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.4707</td>
+<td style="text-align: right;">0.5108</td>
+</tr>
+</tbody>
+</table>
 
 Table 1.Comparison between accuracy and f1 with default hyperparameters
 for each model
@@ -163,18 +167,68 @@ scores are all come from `LogisricRegression`. This finding further
 confirmed our results from previous table that `LogisticRegression` is a
 better model to use than `RandomForest`.
 
-| mean f1 score | params                                     | model              |
-| ------------: | :----------------------------------------- | :----------------- |
-|     0.5105468 | {‘C’: 382, ‘class\_weight’: ‘balanced’}    | LogisticRegression |
-|     0.5103729 | {‘C’: 679, ‘class\_weight’: ‘balanced’}    | LogisticRegression |
-|     0.5102955 | {‘C’: 559, ‘class\_weight’: ‘balanced’}    | LogisticRegression |
-|     0.4770697 | {‘max\_depth’: 946, ‘n\_estimators’: 161}  | RandomForest       |
-|     0.4732701 | {‘max\_depth’: 1793, ‘n\_estimators’: 168} | RandomForest       |
-|     0.4712085 | {‘max\_depth’: 560, ‘n\_estimators’: 94}   | RandomForest       |
-|     0.4665116 | {‘max\_depth’: 1408, ‘n\_estimators’: 43}  | RandomForest       |
-|     0.4423804 | {‘max\_depth’: 736, ‘n\_estimators’: 20}   | RandomForest       |
-|     0.3958155 | {‘C’: 158, ‘class\_weight’: ‘none’}        | LogisticRegression |
-|     0.3958155 | {‘C’: 596, ‘class\_weight’: ‘none’}        | LogisticRegression |
+<table>
+<caption>Table 2. F1 score with optimized hyperpamaters for each model</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">mean f1 score</th>
+<th style="text-align: left;">params</th>
+<th style="text-align: left;">model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.5104704</td>
+<td style="text-align: left;">{‘C’: 559, ‘class_weight’: ‘balanced’}</td>
+<td style="text-align: left;">LogisticRegression</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.5103458</td>
+<td style="text-align: left;">{‘C’: 382, ‘class_weight’: ‘balanced’}</td>
+<td style="text-align: left;">LogisticRegression</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.5102955</td>
+<td style="text-align: left;">{‘C’: 679, ‘class_weight’: ‘balanced’}</td>
+<td style="text-align: left;">LogisticRegression</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.4776511</td>
+<td style="text-align: left;">{‘max_depth’: 1793, ‘n_estimators’: 168}</td>
+<td style="text-align: left;">RandomForest</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.4746316</td>
+<td style="text-align: left;">{‘max_depth’: 946, ‘n_estimators’: 161}</td>
+<td style="text-align: left;">RandomForest</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.4704937</td>
+<td style="text-align: left;">{‘max_depth’: 1408, ‘n_estimators’: 43}</td>
+<td style="text-align: left;">RandomForest</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.4666232</td>
+<td style="text-align: left;">{‘max_depth’: 560, ‘n_estimators’: 94}</td>
+<td style="text-align: left;">RandomForest</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.4494723</td>
+<td style="text-align: left;">{‘max_depth’: 736, ‘n_estimators’: 20}</td>
+<td style="text-align: left;">RandomForest</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.3958155</td>
+<td style="text-align: left;">{‘C’: 158, ‘class_weight’: ‘none’}</td>
+<td style="text-align: left;">LogisticRegression</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.3958155</td>
+<td style="text-align: left;">{‘C’: 596, ‘class_weight’: ‘none’}</td>
+<td style="text-align: left;">LogisticRegression</td>
+</tr>
+</tbody>
+</table>
 
 Table 2. F1 score with optimized hyperpamaters for each model
 
@@ -190,65 +244,29 @@ threshold of the model.
 
 ## References
 
-<div id="refs" class="references hanging-indent">
-
-<div id="ref-docopt">
-
 de Jonge, Edwin. 2018. *Docopt: Command-Line Interface Specification
 Language*. <https://CRAN.R-project.org/package=docopt>.
-
-</div>
-
-<div id="ref-R">
 
 R Core Team. 2020. *R: A Language and Environment for Statistical
 Computing*. Vienna, Austria: R Foundation for Statistical Computing.
 <https://www.R-project.org/>.
 
-</div>
-
-<div id="ref-reback2020pandas">
-
 team, The pandas development. 2020. *Pandas-Dev/Pandas: Pandas* (version
 1.1.1). Zenodo. <https://doi.org/10.5281/zenodo.3993412>.
-
-</div>
-
-<div id="ref-Python">
 
 Van Rossum, Guido, and Fred L. Drake. 2009. *Python 3 Reference Manual*.
 Scotts Valley, CA: CreateSpace.
 
-</div>
-
-<div id="ref-tidyverse">
-
 Wickham, Hadley. 2017. *Tidyverse: Easily Install and Load the
 ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
 
-</div>
-
-<div id="ref-featherr">
-
-———. 2019. *Feather: R Bindings to the Feather ’Api’*.
+———. 2019. *Feather: R Bindings to the Feather ’API’*.
 <https://CRAN.R-project.org/package=feather>.
 
-</div>
-
-<div id="ref-knitr">
-
 Xie, Yihui. 2020. *Knitr: A General-Purpose Package for Dynamic Report
-Generation in R*. <https://yihui.org/knitr/>.
-
-</div>
-
-<div id="ref-yeh2009comparisons">
+Generation in r*. <https://yihui.org/knitr/>.
 
 Yeh, I-Cheng, and Che-hui Lien. 2009. “The Comparisons of Data Mining
 Techniques for the Predictive Accuracy of Probability of Default of
 Credit Card Clients.” *Expert Systems with Applications* 36 (2):
 2473–80.
-
-</div>
-
-</div>

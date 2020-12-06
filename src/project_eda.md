@@ -1,8 +1,3 @@
-Exploratory data analysis of the default of credit card clients data set
-================
-Lara Habashy
-20/11/2020
-
 # Load the data & Preliminary Analysis
 
     ## # A tibble: 6 x 25
@@ -149,7 +144,7 @@ class which we attempt to correct.
 
 ## Correlation Analysis
 
-![](project_eda_files/figure-gfm/corr-1.png)<!-- -->
+![](project_eda_files/figure-markdown_strict/corr-1.png)
 
 Looking at the correlation plot, we see that the features `pay_1`, …,
 `pay_6` are the most correlated with the target variable `default`.
@@ -170,12 +165,6 @@ The top feature’s value, `bill_amt1` is seen to be 82.1% and the least
 valuable feature. We consider selecting features with a value of
 approximately at least 70%.
 
-    ##  [1] "bill_amt1" "bill_amt2" "bill_amt3" "bill_amt4" "bill_amt5" "bill_amt6"
-    ##  [7] "pay_amt1"  "pay_amt2"  "pay_amt3"  "pay_amt4"
-
-    ##  [1] 0.8197778 0.8044000 0.7942667 0.7828889 0.7653333 0.7480000 0.3512444
-    ##  [8] 0.3352889 0.3289778 0.3051556
-
 ### Variable Importance
 
 The first approach we take to evaluate variable importance uses accuracy
@@ -194,7 +183,7 @@ and gini importance.
     ## 0 16542  981  0.05598356
     ## 1  3290 1687  0.66104079
 
-![](project_eda_files/figure-gfm/var%20imp-1.png)<!-- -->
+![](project_eda_files/figure-markdown_strict/var%20imp-1.png)
 
     ## Confusion Matrix and Statistics
     ## 
@@ -229,11 +218,11 @@ in the figure above. The importance function outputs a list of features,
 along with their corresponding Mean Decrease Gini and Mean Decrease
 Accuracy values. Mean Decrease Accuracy suggests that if the variable is
 not important, then rearranging its values should not degrade the
-model’s prediction accuracy. The features at the top of the figure
-have the most predictive power in the model. Eliminating these features
-would significantly decrease the predictive power of the model. Once
-again here, we observe that demographic features has very little
-significance in the data set.
+model’s prediction accuracy. The features at the top of the figure have
+the most predictive power in the model. Eliminating these features would
+significantly decrease the predictive power of the model. Once again
+here, we observe that demographic features has very little significance
+in the data set.
 
 The second approach we take to evaluate variable importance uses the R
 package VSURF. The recently publish library (2019) implements a 3-step
@@ -250,7 +239,7 @@ education level 4.
 It seems clients with lower credit limit balance are more likely to
 default the next payment.
 
-![](project_eda_files/figure-gfm/plots-1.png)<!-- -->![](project_eda_files/figure-gfm/plots-2.png)<!-- -->![](project_eda_files/figure-gfm/plots-3.png)<!-- -->
+![](project_eda_files/figure-markdown_strict/plots-1.png)![](project_eda_files/figure-markdown_strict/plots-2.png)![](project_eda_files/figure-markdown_strict/plots-3.png)
 
 ### Modeling Logistic Regression
 
@@ -306,7 +295,7 @@ default the next payment.
     ## 
     ## Number of Fisher Scoring iterations: 11
 
-![](project_eda_files/figure-gfm/glm-1.png)<!-- -->![](project_eda_files/figure-gfm/glm-2.png)<!-- -->
+![](project_eda_files/figure-markdown_strict/glm-1.png)![](project_eda_files/figure-markdown_strict/glm-2.png)
 
 The logistic regression classifier performed faily well on the test data
 with accuracy of 0.82 and AUC score of 0.724. However, many default
