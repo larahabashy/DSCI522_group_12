@@ -28,6 +28,7 @@ p_load(
 ```{r load data}
 raw_data <- arrow::read_feather(here("data", "raw","default_of_credit_card_clients.feather"))
 dat <- janitor::row_to_names(raw_data, 1)
+
 head(dat)
 str(dat)
 summary(dat)
@@ -35,10 +36,10 @@ summary(dat)
 
 The data set consists of 25 features and 1 discrete response variable called `default_payment_next_month`. There are 30,000 observations of distinct credit card clients. Each row has a unique identifier called `ID`, representing a client. The other features include information amount a given client such as gender, age, approved credit limit, education, marital status, their past payment history, bill statements, and previous payments for 6 months. The history of past payment over 6 months (April-Sept 2005) is given by the features `pay_0`, `pay_2`, `pay_3`, ..., `pay_6` which take on numeric values representing the delay of the repayment in months, i.e. `pay_0`=1 means a client's payment is 1 month late in September 2005, `pay_6`=2 would then mean a clients payment was 2 months past payment in April 2005. A value of -1 is assigned for payments made on time in a given month. Note that the sequence is missing `pay_1`. We rename `pay_0` to `pay_1` for consistency and simplicity. We notice some of those features take on a value of -2, which is undocumented and therefore, we encode as 0.
 
-Furthermore, the bill statements and previous payment monthly features (Sept-April 2005) are measured in dollar amounts. The mean value for the amount of a given credit card limit is $167,484. There is some imbalance in the target class, as well as education level and marital status. Further, the average age of clients is around 36. The target variable, `default_payment_next_month` has a value of 1 including the client's payment is default and 0 for non default. For simplicity, we rename the target feature to `default`. Note that the months are reversed for the pay features. That is, `bill_amt1` and  `pay_amt1` will correspond to September 2005. However, in the past payment status features, the month of September is represented by `pay_6`, and April 2005 by `pay_0` which we rename to `pay_1` for consistency.
+Furthermore, the bill statements and previous payment monthly features (Sept-April 2005) are measured in dollar amounts. The mean value for the amount of a given credit card limit is $167,484. There is some imbalance in the target class, as well as education level and marital status. Further, the average age of clients is around 36. The target variable, `default_payment_next_month` takes on a value of 1 to indicate the client's payment is likely to default next month and 0 indicates non-defaults. For simplicity, we rename the target feature to `default`. Note that the months are reversed for the pay features. That is, `bill_amt1` and  `pay_amt1` will correspond to September 2005. However, in the past payment status features, the month of September is represented by `pay_6`, and April 2005 by `pay_0` which we rename to `pay_1` for consistency.
 The `id` feature is dropped as it's irrelavant for our application. Further, unique identifiers that could be used to identify an individual would be dropped or decoded to protect the privacy of the individuals involvded.
 
-The `education` feature takes on one of 7 numeric values representing a given client record education level. An education with value 1 is assigned for clients with graduate degree, 2 for bachelors degrees, and so on. 
+The `education` feature takes on one of 7 numeric values representing a given client record education level. An education level with value 1 is assigned for clients with graduate degrees, 2 for bachelors degrees, 3 for high school, 4 for others (up to high school) with 5 and 6 as undefined. There is no definition for education level 0. We see that only 14 out of 30,000 observations correspond to clients with education level 0.
 
 `marriage` takes on one of 3 values where a value of 1 indicates the client's marital status as married, 2 is single, and 3 is classified as any other status. `sex` takes on numeric values as well, with 1 indicating the client is male and 2 indicating the client is female.
 
@@ -95,6 +96,21 @@ cred_data <- cred_data %>%
 #target class proportions
 target <- cred_data$default
 prop.table(table(target)) 
+#training_data %>% group_by(default) %>% summarise(proportion = round(n()/nrow(.),4))
+
+prop_plot <- cred_data %>% 
+    ggplot(aes(x=as.numeric(default),  y = ..prop.., fill = factor(..x..), group = 1)) +
+    geom_bar(stat='count') +
+    geom_text(stat='count', aes(label=..prop..), vjust=3, hjust=0.5, color = 'black') +
+    scale_y_continuous(labels = scales::percent_format()) + 
+    ggtitle("Proportions of Defaulting Clients") +
+    xlab("Defaults") +
+    ylab("Proportion") 
+  
+prop_plot <- prop_plot + guides(fill=guide_legend(title="Default Flag")) 
+prop_plot <- prop_plot + scale_shape_discrete(labels = c("Non-Defaults", "Defaults")) + scale_fill_discrete(labels = c("Non-Defaults", "Defaults"))
+
+prop_plot
 ```
 
 # Partition the data set into training and test sets
@@ -181,12 +197,6 @@ if (! require ("VSURF")){
 ``` 
 
 
-```{r best predictors}
-# best_features <- selectKBest(training_data,'default', roughsetConsistency,10)
-# best_features$featuresSelected
-# best_features$valuePerFeature
-```
-
 ### Variable Importance 
 
 The first approach we take to evaluate variable importance uses accuracy and gini importance.
@@ -237,8 +247,6 @@ ggplot(training_data, aes(pay_1, fill = default)) +
   facet_grid(.~education) + 
   theme_fivethirtyeight()
 
-#df.melt = melt(training_data, id.vars = 'default')
-
 ggplot(training_data) +
     aes(x = limit_bal,
         fill = default,
@@ -260,7 +268,7 @@ library (ROCR)
 glm_mode <- glm(default ~ ., data=training_data, family=binomial)
 summary(glm_mode)
 
-#drop target variable from testing set
+# drop target variable from testing set
 test.x <-  test_data %>% 
   select(-default)
 
@@ -268,7 +276,7 @@ test_data$glm_score <- predict(glm_mode, type="response", test.x)
 pred <- prediction(test_data$glm_score, test_data$default)
 glm.perf <- performance(pred, "tpr", "fpr")
 
-#box plot
+# box plot
 test_data %>% 
   ggplot(aes(default, glm_score, fill=default)) +
   geom_boxplot() + 
