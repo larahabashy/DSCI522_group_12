@@ -52,7 +52,6 @@ def main(train_data, test_data, out_dir, prelim_results_dir):
     except:
         os.makedirs(os.path.dirname(out_dir))
         predict_df.to_csv(out_dir, index=False)
-        os.makedirs(os.path.dirname(prelim_results_dir))
         prelim_results.to_csv(prelim_results_dir)
 
 
@@ -95,7 +94,7 @@ def prediction(X_train, y_train):
 
     # model 2 Logistic Regression
     print("Running model 2")
-    logreg_pipeline = make_pipeline(LogisticRegression(max_iter=300, class_weight="balanced"))
+    logreg_pipeline = make_pipeline(LogisticRegression(max_iter=600, class_weight="balanced"))
     scores = cross_validate(logreg_pipeline, X_train, y_train, return_train_score=True, scoring=scoring)
     store_results("Logistic Regression", scores, results_dict)
     results_dict= pd.DataFrame(results_dict)

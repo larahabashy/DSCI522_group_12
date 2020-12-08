@@ -13,6 +13,7 @@ Options:
 import os
 import pandas as pd
 from docopt import docopt
+import feather
 
 opt = docopt(__doc__)
 
@@ -22,10 +23,12 @@ def main(url, saving_path):
   df = df.astype(str)
   # save data to feather
   try:
-      df.to_feather(saving_path)
-  except:
-      os.makedirs(os.path.dirname(saving_path))
-      df.to_feather(saving_path)
+      feather.write_dataframe(df, saving_path)
+    #   df.to_feather(saving_path)
+  except Exception as e:
+      print(e)
+    #   os.makedirs(os.path.dirname(saving_path))
+    #   df.to_feather(saving_path)
 
 if __name__ == "__main__":
     main(opt["--url"],opt["--saving_path"])
