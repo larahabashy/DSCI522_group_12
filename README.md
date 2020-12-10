@@ -10,15 +10,20 @@ The data set for this project is sourced from the UCI Machine Learning Repositor
 
 The dataset contains 30,000 observations representing individual customers in Taiwan. Each row contains relevant information about the individual as well as how timely they were with their bill payments and  the corresponding bill amounts for each time period. The bill payment information contains records from April 2005 to September 2005. The data was collected from an important cash and credit card issuing bank in Taiwan.
 
-In the exploratory analysis portion, first we explore the data to observe any missing values or outliers. Next, we partition the data set into training and testing portions. We examine correlation amongst features and with the target response. Further, we investigate feature importance using various methods such as using a random forest classifier. The results are documented [here](https://github.com/HazelJJJ/DSCI522_group_12/blob/main/src/project_eda.md).
+In the exploratory analysis portion, first we explore the data to observe any missing values or outliers. Next, we partition the data set into training and testing portions. We examine correlation amongst features and with the target response. Further, we investigate feature importance using various methods such as using a random forest classifier. The results are documented [here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/src/project_eda.md).
 
 Our logistic regression classifier performed fairly well on the test data with accuracy of 0.82. The AUC score of 0.724 is fairly good. On the 7500 test data cases, it correctly predicted 6155 default payments. However, many default payments were not detected. As such, we continue to investigate way to improve the models accuracy.
 
+## Report
+The final report can be found [here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/doc/report.md).
 ## Usage
 To replicate this analysis, clone the GitHub repository, install dependencies and run the following command from the root directory of this project:
 
 - Type `make all` from command line to execute scripts in the src directory.
 - To clear the generated files and reset the repo, type `make clean` from command line to clean and remove the results directory.
+
+The makefile is comprised of the following:
+![](Makefile.png)
 
 ## Dependencies
 - Python 3.8.3 and Python packages:
