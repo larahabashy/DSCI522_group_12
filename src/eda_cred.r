@@ -38,7 +38,7 @@ main <- function(train, train_scaled, out_dir) {
   training_data <- read_feather(train)
   training_scaled <- read_feather(train_scaled)
   
-  #density plot
+  # density plot
   density_plot <- training_scaled %>%
     ggplot(aes(x = limit_bal,
                fill = default)) +
@@ -55,7 +55,7 @@ main <- function(train, train_scaled, out_dir) {
          width = 8, 
          height = 10)
   
-  #education count colort by default
+  # education count colort by default
   education_histogram <- training_data %>% 
     ggplot(aes(x=factor(education), fill=default)) +
     geom_bar(position="dodge") + 
@@ -75,6 +75,7 @@ main <- function(train, train_scaled, out_dir) {
          width = 8, 
          height = 10)
   
+  # target counts bar plot 
   count_plot <- training_data %>% 
     ggplot(aes(x=as.numeric(default), fill=default)) +
     geom_bar() +
@@ -91,8 +92,9 @@ main <- function(train, train_scaled, out_dir) {
          width = 8, 
          height = 10)
   
-  prop_plot <- new_df %>% 
-    ggplot(aes(x=as.numeric(default_fact),  y = ..prop.., fill = factor(..x..), group = 1)) +
+  # proportions plot
+  prop_plot <- training_data %>% 
+    ggplot(aes(x=as.numeric(default),  y = ..prop.., fill = factor(..x..), group = 1)) +
     geom_bar(stat='count') +
     geom_text(stat='count', aes(label=..prop..), vjust=3, hjust=0.5, color = 'black') +
     scale_y_continuous(labels = scales::percent_format()) + 
@@ -108,18 +110,12 @@ main <- function(train, train_scaled, out_dir) {
          width = 8, 
          height = 10)
   
-  training_data %>% group_by(default) %>% summarise(proportion = round(n()/nrow(.),4))
-  ggsave(paste0(out_dir, "/education_histogram.png"), 
-         education_histogram,
-         width = 8, 
-         height = 10)
-  
   numeric_df <- training_data %>%
     select(-c(sex, education, marriage))
   numeric_df$default <- as.numeric(numeric_df$default)
   numeric_df$age <- as.numeric(numeric_df$age)
   
-  #correlation plot
+  # correlation plot
   corr <- round(cor(numeric_df %>% select_if(is.numeric)), 1)
   correlation_plot <- ggcorrplot(corr, hc.order = TRUE, outline.col = "white")
   
