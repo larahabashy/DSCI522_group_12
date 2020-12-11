@@ -1,6 +1,7 @@
 # install base R & tidyverse
 FROM rocker/tidyverse
 
+# check for updates
 RUN apt-get update
 
 # install python3 & virtualenv
@@ -31,4 +32,3 @@ RUN apt-get update -qq && install2.r --error \
     caret \
     pacman \
     feather
-    
