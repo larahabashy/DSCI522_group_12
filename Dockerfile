@@ -31,4 +31,5 @@ RUN apt-get update -qq && install2.r --error \
     --deps TRUE \
     caret \
     pacman \
-    feather
+    feather \
+    ggthemes
