@@ -18,10 +18,12 @@ from docopt import docopt
 import os
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
 from sklearn.dummy import DummyClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import f1_score, recall_score
+from sklearn.metrics import f1_score, recall_score, plot_confusion_matrix
 from sklearn.model_selection import (
     RandomizedSearchCV,
     cross_validate,
@@ -169,6 +171,12 @@ def predict_test(X_train, y_train, X_test, y_test, best_model):
     y_pred = best_model.predict(X_test)
     test_score = f1_score(y_test, y_pred)
     print(f"Best test score: {test_score}")
+    
+    # Plot confusion matrix results on test
+    rcParams.update({'figure.autolayout': True})
+    plot_confusion_matrix(best_model, X_test, y_test, display_labels=["default", "pay bill"], values_format="d", cmap="Purples")
+    plt.title("Confusion matrix on test set results")
+    plt.savefig('results/figures/confusionmtx.png')
     return test_score
 
 
