@@ -32,4 +32,15 @@ RUN apt-get update -qq && install2.r --error \
     caret \
     pacman \
     feather \
-    ggthemes
+    ggthemes \
+    ggcorrplot \
+    here \
+    PerformanceAnalytics \
+    GGally \
+    FSinR \
+    ggpubr \
+    VSURF
+    
+
+# install janitor R package    
+RUN Rscript -e 'devtools::install_github("sfirke/janitor")'
