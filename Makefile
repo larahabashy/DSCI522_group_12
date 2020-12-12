@@ -45,6 +45,9 @@ clean :
 		rm -rf results/figures/correlation_plot.png 
 		rm -rf results/figures/density_plot.png 
 		rm -rf results/figures/education_histogram.png 
+		rm -rf results/figures/counts_plot.png
+		rm -rf results/figures/proportions_plot.png
+		rm -rf results/figures/confusionmtx.png
 		rm -rf results/prediction/prediction_hp_results.csv
 		rm -rf results/prediction/prediction_prelim_results.csv
 		rm -rf src/project_eda.md
