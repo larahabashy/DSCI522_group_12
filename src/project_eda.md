@@ -1,4 +1,5 @@
-# Load the data & Preliminary Analysis
+Load the data & Preliminary Analysis
+====================================
 
     ## # A tibble: 6 x 25
     ##   ID    LIMIT_BAL SEX   EDUCATION MARRIAGE AGE   PAY_0 PAY_2 PAY_3 PAY_4 PAY_5
@@ -92,28 +93,33 @@ Furthermore, the bill statements and previous payment monthly features
 amount of a given credit card limit is $167,484. There is some imbalance
 in the target class, as well as education level and marital status.
 Further, the average age of clients is around 36. The target variable,
-`default_payment_next_month` has a value of 1 including the client’s
-payment is default and 0 for non default. For simplicity, we rename the
-target feature to `default`. Note that the months are reversed for the
-pay features. That is, `bill_amt1` and `pay_amt1` will correspond to
-September 2005. However, in the past payment status features, the month
-of September is represented by `pay_6`, and April 2005 by `pay_0` which
-we rename to `pay_1` for consistency. The `id` feature is dropped as
-it’s irrelavant for our application. Further, unique identifiers that
-could be used to identify an individual would be dropped or decoded to
-protect the privacy of the individuals involvded.
+`default_payment_next_month` takes on a value of 1 to indicate the
+client’s payment is likely to default next month and 0 indicates
+non-defaults. For simplicity, we rename the target feature to `default`.
+Note that the months are reversed for the pay features. That is,
+`bill_amt1` and `pay_amt1` will correspond to September 2005. However,
+in the past payment status features, the month of September is
+represented by `pay_6`, and April 2005 by `pay_0` which we rename to
+`pay_1` for consistency. The `id` feature is dropped as it’s irrelavant
+for our application. Further, unique identifiers that could be used to
+identify an individual would be dropped or decoded to protect the
+privacy of the individuals involvded.
 
 The `education` feature takes on one of 7 numeric values representing a
-given client record education level. An education with value 1 is
-assigned for clients with graduate degree, 2 for bachelors degrees, and
-so on.
+given client record education level. An education level with value 1 is
+assigned for clients with graduate degrees, 2 for bachelors degrees, 3
+for high school, 4 for others (up to high school) with 5 and 6 as
+undefined. There is no definition for education level 0. We see that
+only 14 out of 30,000 observations correspond to clients with education
+level 0.
 
 `marriage` takes on one of 3 values where a value of 1 indicates the
 client’s marital status as married, 2 is single, and 3 is classified as
 any other status. `sex` takes on numeric values as well, with 1
 indicating the client is male and 2 indicating the client is female.
 
-# Data Cleaning
+Data Cleaning
+=============
 
 Before diving into EDA, we convert features into the best format for our
 application. We also explore any missing values and find none.
@@ -126,7 +132,10 @@ a scaling transformation to the numeric features in the data set.
     ##      0      1 
     ## 0.7788 0.2212
 
-# Partition the data set into training and test sets
+![](project_eda_files/figure-markdown_strict/clean%20data-1.png)
+
+Partition the data set into training and test sets
+==================================================
 
 Before splitting the data set into training (75%) and testing (25%)
 sets, we inspect class balance to detect any imbalance in the target
@@ -140,9 +149,11 @@ class which we attempt to correct.
     ##      0      1 
     ## 0.7788 0.2212
 
-# Exploratory analysis on the training data set
+Exploratory analysis on the training data set
+=============================================
 
-## Correlation Analysis
+Correlation Analysis
+--------------------
 
 ![](project_eda_files/figure-markdown_strict/corr-1.png)
 
@@ -153,7 +164,8 @@ our response but rather the features tracking the monthly bill amounts.
 The lowest correlated feature is `limit_bal`, which we applying a
 standardization transformation to before modeling.
 
-## Feature Analysis
+Feature Analysis
+----------------
 
 Next, we consider a feature selection method that allows for individual
 evaluation of each feature. We apply the function selectKBest on the
