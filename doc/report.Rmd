@@ -4,7 +4,7 @@ author: "Selma Duric, Lara Habashy, Hazel Jiang</br>"
 date: "12/12/2020"
 bibliography: reference.bib
 output: 
-  html_document:
+  github_document:
     toc: TRUE
 ---
 
@@ -37,7 +37,7 @@ include_graphics('../results/figures/proportions_plot.png')
 ### Analysis
 
 Based on the description of the dataset, we divided features into 2 types: numerical features and categorical features. In terms of numerical features, for each individual we have the prior 6 months of monthly bill amounts(measured in Taiwanese currency) as well as the history of payment. The features labelled as `PAY_0`, `PAY_2`...`PAY_6` represents the delay in repayment in months where a larger value indicates slower repayment. Furthermore, we also have credit card limit (`LIMIT_BAL`) and `AGE` as our numerical features. We examined the correlation between all the numerical features and the target, based on the plot we found that credit limit is likely to be negative correlated to the target and age is slightly positively correlated to the target. Also, `BILL_AMT` features are negative correlated to our target, and the older the `BILL_AMT`(compare to the due date), the less correlated it is to the target. 
-
+ 
 ```{r fig.cap = 'Figure 2: Correlation between numeric features and target', out.width = '50%'}
 include_graphics('../results/figures/correlation_plot.png')
 ```
