@@ -51,12 +51,12 @@ In terms of categorical features, we have `SEX`, `EDUCATION` and `MARRIAGE`. Bas
 include_graphics('../results/figures/education_histogram.png')
 ```
 
-A more comprehensive review and analysis of the data is available in our EDA report including information about data transformation steps that were taken. The EDA report can be found [Here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/src/project_eda.md)
+A more comprehensive review and analysis of the data is available in our EDA report including information about data transformation steps that were taken. The EDA report can be found [here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/src/project_eda.md).
 
 
 Both a linear classification model `LogisticRegression` and an ensemble decision tree classification model. We compared their performance with default parameters first then apply hyperparameter tuning. Hyperparameter optimization was completed using a randomized search method (scikit-learn's `RandomSearchCV`) with 5 iterations and 5-fold cross validation. The hyperparameters `class_weight` and `C` were optimized for `Logistic Regression` and n_estimators and max_depth for `Random Forest`. The R[@R] and Python[@Python] programming languages and the following R and Python packages were used to perform the analysis: docopt[@docopt], feather[@featherr], knitr[@knitr], tidyverse[@tidyverse]and Pandas[@reback2020pandas].
 
-The code used to perform the analysis and create this report can be found [here](https://github.com/UBC-MDS/DSCI522_group_12/tree/main/src)
+The code used to perform the analysis and create this report can be found [here](https://github.com/UBC-MDS/DSCI522_group_12/tree/main/src).
 
 ## Results & Discussion
 
@@ -64,24 +64,23 @@ To look at which model is better for prediction, we first compare the two models
 
 ```{r compare results, message=FALSE, warning=FALSE}
 result_compare <- read_csv('../results/prediction/prediction_prelim_results.csv')
-knitr::kable(result_compare, caption = 'Table 1.Comparison between accuracy and f1 with default hyperparameters on training set ')
+knitr::kable(result_compare, caption = 'Table 1. Comparison between accuracy and f1 with default hyperparameters on training set ')
 ```
 
 Since the validation scores were comparable, we then tune hyperparameters for both models and compare the results. As indicated in the results table below, our best f1 score on cross-validation is 0.51. The best performing model is `Logistic Regression` with `class_weight='balanced'` and `C=382`.
 
 ```{r f1 results, message=FALSE, warning=FALSE}
 result_f1 <- read_csv('../results/prediction/prediction_hp_results.csv')
-knitr::kable(result_f1, caption='Table 2. F1 score with optimized hyperpamaters for each model')
+knitr::kable(result_f1, caption='Table 2. F1 score with optimized hyperparameters for each model')
 ```
 
 With the best performing model, we tried to predict on our test data and the f1 score on the test set is 0.5. Based on the result above, we find that although `LogisticRegression` is the better model to use between the two, the f1 score is only around 0.5 which suggests that there is still a lot of errors in prediction.
 
-```{r fig.cap = 'Figure 4: Confusion matrix for LogistricRegression', out.width = '50%'}
+```{r fig.cap = 'Figure 4: Confusion matrix for LogisticRegression on Test Set', out.width = '50%'}
 include_graphics('../results/figures/confusionmtx.png')
 ```
 If we look at the confusion matrix from the test set, we can see that of 7,500 examples, the model predicted slightly less than 75% of these correctly. However, we also note that it falsely predicted that more than 1,200 customers (15%) would pay their next bill when in fact they would not. This is important as if this model were to be used by a bank, it would not flag these customers for intervention. The more than 600 customers that were predicted to default when they actually would not is a less risky error. A 15% 'miss' rate is a substantial error that may not make this model acceptable for deployment as a prediction tool.
 
-With the above in mind, we propose some future improvements to the model. One improvement is to perform feature engineering. We only have 23 features for the model to learn, which is very limited for problem like this. Future research may consider to create new features that would help the model to better learn the pattern, or if possible, to gather from customers such as ccupation, known net asset value, bank account value, number of credit cards, etc.
-A second improvement is to look at obtaining more data. The data currently is limited to a very small population (banks in Taiwan) over a short period of time (6 months in 2005). By expanding this over more countries and over additional years may allow for the inclusion features that capture external events such as recessions and other economic events that may be more predictive of defaults.
+With the above in mind, we propose some future improvements to the model. One improvement is to perform feature engineering. We only have 23 features for the model to learn, which is very limited for a problem like this. Future research may consider to create new features that would help the model to better learn patterns, or if possible, to gather information from customers such as occupation, known net asset value, bank account value, number of credit cards, etc. A second improvement is to look at obtaining more data. The data currently is limited to a very small population (banks in Taiwan) over a short period of time (6 months in 2005). By expanding this over more countries and over additional years may allow for the inclusion features that capture external events such as recessions and other economic events that may be more predictive of defaults.
 
 ## References
