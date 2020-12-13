@@ -19,6 +19,7 @@ library(docopt)
 library(ggthemes)
 #library(graphics)
 library(ggcorrplot)
+library(arrow)
 
 theme_set(theme_minimal())
 
@@ -35,8 +36,8 @@ main <- function(train, train_scaled, out_dir) {
   }
   
   # read data 
-  training_data <- read_feather(train)
-  training_scaled <- read_feather(train_scaled)
+  training_data <- arrow::read_feather(train)
+  training_scaled <- arrow::read_feather(train_scaled)
   
   # density plot
   density_plot <- training_scaled %>%
@@ -75,23 +76,6 @@ main <- function(train, train_scaled, out_dir) {
          width = 8, 
          height = 10)
   
-  # target counts bar plot 
-  count_plot <- training_data %>% 
-    ggplot(aes(x=as.numeric(default), fill=default)) +
-    geom_bar() +
-    geom_text(stat='count', aes(label=..count..), vjust=3, hjust=0.9, color = 'black') + 
-    ggtitle("Count of Defaulting Clients") +
-    xlab("Defaults") +
-    ylab("Count") 
-  
-  count_plot <- prop_plot + guides(fill=guide_legend(title="Default Flag")) 
-  count_plot <- prop_plot + scale_shape_discrete(labels = c("Non-Defaults", "Defaults")) + scale_fill_discrete(labels = c("Non-Defaults", "Defaults"))
-  
-  ggsave(paste0(out_dir, "/counts_plot.png"), 
-         count_plot,
-         width = 8, 
-         height = 10)
-  
   # proportions plot
   prop_plot <- training_data %>% 
     ggplot(aes(x=as.numeric(default),  y = ..prop.., fill = factor(..x..), group = 1)) +
@@ -114,6 +98,25 @@ main <- function(train, train_scaled, out_dir) {
     select(-c(sex, education, marriage))
   numeric_df$default <- as.numeric(numeric_df$default)
   numeric_df$age <- as.numeric(numeric_df$age)
+  
+  # target counts bar plot 
+  count_plot <- training_data %>% 
+    ggplot(aes(x=as.numeric(default), fill=default)) +
+    geom_bar() +
+    geom_text(stat='count', aes(label=..count..), vjust=3, hjust=0.9, color = 'black') + 
+    ggtitle("Count of Defaulting Clients") +
+    xlab("Defaults") +
+    ylab("Count") 
+  
+  count_plot <- prop_plot + guides(fill=guide_legend(title="Default Flag")) 
+  count_plot <- prop_plot + scale_shape_discrete(labels = c("Non-Defaults", "Defaults")) + scale_fill_discrete(labels = c("Non-Defaults", "Defaults"))
+  
+  ggsave(paste0(out_dir, "/counts_plot.png"), 
+         count_plot,
+         width = 8, 
+         height = 10)
+  
+
   
   # correlation plot
   corr <- round(cor(numeric_df %>% select_if(is.numeric)), 1)
