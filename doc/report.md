@@ -1,7 +1,7 @@
 Credit Card Default Prediction
 ================
 Selma Duric, Lara Habashy, Hazel Jiang</br>
-11/28/2020
+12/12/2020
 
   - [Summary](#summary)
   - [Introduction](#introduction)
@@ -15,12 +15,15 @@ Selma Duric, Lara Habashy, Hazel Jiang</br>
 
 Here we attempt to apply two machine learning models
 `LogisticRegression` and `RandomForest` on a credit card default data
-set and find the better model with optimized hyperparameter to predict
-if a client is likely to default payment on the credit card in order to
-lower the risk for banks to issue credit card to more reliable clients.
-`LogisticRegression` performed better compared to `RandomForest`. Our
-best prediction has f1 score of 0.51 with optimzed hyperpameter of
-*C=382* and *class\_weight=‘balanced’*.
+set to predict whether the customer will default on the credit card
+payment for the next month in order to lower the risk for banks to issue
+credit card to more reliable clients. The result indicates that
+`LogisticRegression` with optimized hyperparameter
+`class_weight='balanced'` and `C=382` is the best performing model. We
+get f1 score of xxx for prediction on test data. It is a fair score but
+there is room for improvement. We suggest future research to apply
+feature engineering and to obtain more data for a better predication
+accuracy.
 
 ## Introduction
 
@@ -57,69 +60,106 @@ is what we used to build the model. This dataset has information on
 default payments of credit card in Taiwan from April to September 2005.
 There are 30,000 observations of distinct credit card clients in this
 data set with each row representing a unique client. There are 25
-variables in total. Within the 25 variables, 23 of them are useful
-features for the prediction (we will drop `ID` column since it is
-irrelevant to the prediction). Our target is
+variables in total(24 features and 1 target). Within the 24 features, 23
+of them are useful features for the prediction (we will drop `ID` column
+since it is irrelevant to the prediction). Our target is
 `default.payment.next.month` column. There are 2 classes in the column,
-with `class 0` respect to payment on time and with `class 1` respect to
-default on payment. We notice there exists class imbalance in the target
-column. 77.9% of the examples are belong to `class 1` and only 22.1% of
-examples belong to `class 0`. Because we are interested to find
-customers who are likely to default on their payment, predicting
-`class 1` correctly is more imortant to us. Instead of getting a good
-accuracy score, we care more about the recall score. At the same time,
-precision score is also very important because if we predict customers
-to the wrong class, it my hurt customer loyalty. Therefore, considering
-the importance of both recall and precision, we will use f1 score as our
-metrics for assessment.
+with `class 0` representing a client paying their next bill and
+`class 1` representing a clent defaulting on their next bill payment. We
+notice there exists class imbalance in the target column. 77.9% of the
+examples belong to `class 1` and only 22.1% of examples belong to
+`class 0`. Because we are interested to find customers who are likely to
+default on their payment, predicting `class 1` correctly is more
+imortant to us rather than getting a good accuracy score. With a high
+accuracy score, we may miss potentially high amounts of false positives
+or negatives which would include customers who we predict will not
+default when they actually will. For this reason, we care more about the
+recall score. At the same time, precision score is also very important
+because if we predict customers to the wrong class, it my hurt customer
+loyalty. Therefore, considering the importance of both recall and
+precision, we have chosen f1 score as our metrics for assessment. Below
+is a graph indicating the class imbalance in our target.
+
+<div class="figure">
+
+<img src="../results/figures/proportions_plot.png" alt="Figure 1: Class imbalance on target" width="50%" />
+
+<p class="caption">
+
+Figure 1: Class imbalance on target
+
+</p>
+
+</div>
 
 ### Analysis
 
 Based on the description of the dataset, we divided features into 2
-types, numerical features and categorical features. In terms of
-numerical features, each individual have the same 6 month time periods
-for bill statements and previous payment monthly (measured in dollar
-amounts) as well as the history of past payment `PAY_0`, `PAY_2`…`PAY_6`
-that representing the delay of the repayment in months. Furthermore, we
-also have credit card limit (`LIMIT_BAL`) and age as our numerical
-features. We examined the correlation between all the numerical features
-and the target, based on the plot we found that credit limit is likely
-to be negative correlated to the target and age is slightly positive
-correlated to the target. Also, `BILL_AMT` features are negative
-correlated to our target, and the further the `BILL_AMT`(compare to the
-due date), the less correlative it is to the target.
+types: numerical features and categorical features. In terms of
+numerical features, for each individual we have the prior 6 months of
+monthly bill amounts(measured in Taiwanese currency) as well as the
+history of payment. The features labelled as `PAY_0`, `PAY_2`…`PAY_6`
+represents the delay in repayment in months where a larger value
+indicates slower repayment. Furthermore, we also have credit card limit
+(`LIMIT_BAL`) and `AGE` as our numerical features. We examined the
+correlation between all the numerical features and the target, based on
+the plot we found that credit limit is likely to be negative correlated
+to the target and age is slightly positively correlated to the target.
+Also, `BILL_AMT` features are negative correlated to our target, and the
+older the `BILL_AMT`(compare to the due date), the less correlated it is
+to the target.
 
-\*\*\*\*\*\*\* ADD PLOT \*\*\*\*\*\*\*\*
+<div class="figure">
+
+<img src="../results/figures/correlation_plot.png" alt="Figure 2: Correlation between numeric features and target" width="50%" />
+
+<p class="caption">
+
+Figure 2: Correlation between numeric features and target
+
+</p>
+
+</div>
 
 In terms of categorical features, we have `SEX`, `EDUCATION` and
 `MARRIAGE`. Based on the plot and data description, we have 6 categories
 for `EDUCATION` with 1=graduate school, 2=university, 3=high school,
-4=others and 5,6=unknown. It seems like people with high school
-education has a higher proportion of default payments. It drew our
-attention that we do not have a lot of data for category 4, 5 and 6, nor
-do we know what they actually mean. Without further information, it may
-have minor affect on our prediction accuracy.
+4=others and 5,6=unknown. The plot suggests that people with lower
+levels of education may have a higher proportion of default payments as
+compared to those with higher levels of education. However, we note that
+we do have some categories that warrant further inspection of the data
+to remove ambiguous categories such as ‘Other’ and "Unknown’. Without
+further information, we believe this would have a minor effect on our
+prediction accuracy but note this as a feature for further review.
 
-\*\*\*\*\*\* ADD PLOT \*\*\*\*\*\*\*\*
+<div class="figure">
 
-We have a more detailed description and analysis on the data we have in
-our EDA report, including confusion matrix and how we transform data.
-The EDA report can be found
+<img src="../results/figures/education_histogram.png" alt="Figure 3: Proportion of default payments for different education levels" width="50%" />
+
+<p class="caption">
+
+Figure 3: Proportion of default payments for different education levels
+
+</p>
+
+</div>
+
+A more comprehensive review and analysis of the data is available in our
+EDA report including information about data transformation steps that
+were taken. The EDA report can be found
 [Here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/src/project_eda.md)
 
 Both a linear classification model `LogisticRegression` and an ensemble
-decision tree classification model `RandomForest` from
-scikit-learn(Pedregosa et al. 2011) will be used to build this
-classification model. We will compare the their performance with default
-parameters first then apply hyperparameter tuning. The appropriate
-hyperparameters were chosen using `RandomSearchCV` with 5 iteration and
-5-fold cross validation. We will optimize `class_weight` and `C`
-hyperparameters for `Logistic Regression` and `n_estimators` and
-`max_depth` for `Random Forest`. The R(R Core Team 2020) and Python(Van
-Rossum and Drake 2009) programming languages and the following R and
-Python packages were used to perform the analysis: docopt(de Jonge
-2018), feather(Wickham 2019), knitr(Xie 2020), tidyverse(Wickham
-2017)and Pandas(team 2020).
+decision tree classification model. We compared their performance with
+default parameters first then apply hyperparameter tuning.
+Hyperparameter optimization was completed using a randomized search
+method (scikit-learn’s `RandomSearchCV`) with 5 iterations and 5-fold
+cross validation. The hyperparameters `class_weight` and `C` were
+optimized for `Logistic Regression` and n\_estimators and max\_depth for
+`Random Forest`. The R(R Core Team 2020) and Python(Van Rossum and Drake
+2009) programming languages and the following R and Python packages were
+used to perform the analysis: docopt(de Jonge 2018), feather(Wickham
+2019), knitr(Xie 2020), tidyverse(Wickham 2017)and Pandas(team 2020).
 
 The code used to perform the analysis and create this report can be
 found [here](https://github.com/UBC-MDS/DSCI522_group_12/tree/main/src)
@@ -128,79 +168,89 @@ found [here](https://github.com/UBC-MDS/DSCI522_group_12/tree/main/src)
 
 To look at which model is better for prediction, we first compare the
 two models with default hyperparameters. We used `DummyRegression` with
-`strategy='prior'` as our baseline. Although it has an accuracy score of
-0.78, it is not very reliable because we have class imbalance in the
-data set and f1 score is more important in our prediction. Our baseline
-has f1 score of 0, which is not good. On the other hand, both
-`RandomForest` and `LogisticRegression` has better score on f1.
-`RandomForest` has a very high f1 on the training set, but the score is
-low on the validation set, and there exists a huge gap between the two
-scores, which means we have an overfitting problem. On the other hand,
-`LogisticRegression` has very similar training and validation f1 scores,
-it has a higher f1 score compared to `RandomForest` model. Therefore, we
-believe `LogisticRegression` is a better model to use for prediction.
+`strategy='prior'` as our baseline. Compare to the baseline, both
+`RandomForest` and `LogisticRegression` has better score on f1(0.47 and
+0.51 respectively). However, we also noticed that `RandomForest` has a
+very high f1 on the training set, but the score is low on the validation
+set, and there exists a huge gap between the two scores, which means we
+have an overfitting problem.
 
 | X1                         | Baseline | Random Forest | Logistic Regression |
 | :------------------------- | -------: | ------------: | ------------------: |
-| mean\_accuracy\_train      |   0.7788 |        0.9995 |              0.7448 |
-| mean\_accuracy\_validation |   0.7788 |        0.8155 |              0.7440 |
-| mean\_f1\_train            |   0.0000 |        0.9988 |              0.5125 |
-| mean\_f1\_validation       |   0.0000 |        0.4707 |              0.5108 |
+| mean\_accuracy\_train      |   0.7788 |        0.9995 |              0.7449 |
+| mean\_accuracy\_validation |   0.7788 |        0.8156 |              0.7442 |
+| mean\_f1\_train            |   0.0000 |        0.9988 |              0.5126 |
+| mean\_f1\_validation       |   0.0000 |        0.4694 |              0.5110 |
 
 Table 1.Comparison between accuracy and f1 with default hyperparameters
-for each model
+on training set
 
-Since the validation scores were comparable, we decided to tune
-hyperparameters for both models and compare the results with the
-previous table. The hyperparameters we chose for `RandomForest` is
-`n_estimators` (low=10, high=300) and `max_depth` (low=1, high=5000).
-The hyperparameters for `LogisticRegression` is `class_weight`
-(“balanced” vs “none”) and `C` (low=0, high=1000). We only focus on f1
-score in this comparasion since it is more relavant to the issue we care
-about. We ranked the f1 score from high to low. As indicated in the
-table, our best f1 score is 0.51 with hyperparameter *C=382* and
-*class\_weight=‘balanced’*. The results also show that the top 3 f1
-scores are all come from `LogisricRegression`. This finding further
-confirmed our results from previous table that `LogisticRegression` is a
-better model to use than `RandomForest`.
+Since the validation scores were comparable, we then tune
+hyperparameters for both models and compare the results. As indicated in
+the results table below, our best f1 score on cross-validation is 0.51.
+The best performing model is `Logistic Regression` with
+`class_weight='balanced'` and `C=382`.
 
 | mean f1 score | params                                     | model              |
 | ------------: | :----------------------------------------- | :----------------- |
-|     0.5104704 | {‘C’: 559, ‘class\_weight’: ‘balanced’}    | LogisticRegression |
-|     0.5103458 | {‘C’: 382, ‘class\_weight’: ‘balanced’}    | LogisticRegression |
-|     0.5102955 | {‘C’: 679, ‘class\_weight’: ‘balanced’}    | LogisticRegression |
-|     0.4776511 | {‘max\_depth’: 1793, ‘n\_estimators’: 168} | RandomForest       |
-|     0.4746316 | {‘max\_depth’: 946, ‘n\_estimators’: 161}  | RandomForest       |
-|     0.4704937 | {‘max\_depth’: 1408, ‘n\_estimators’: 43}  | RandomForest       |
-|     0.4666232 | {‘max\_depth’: 560, ‘n\_estimators’: 94}   | RandomForest       |
-|     0.4494723 | {‘max\_depth’: 736, ‘n\_estimators’: 20}   | RandomForest       |
+|     0.5105100 | {‘C’: 382, ‘class\_weight’: ‘balanced’}    | LogisticRegression |
+|     0.5104636 | {‘C’: 559, ‘class\_weight’: ‘balanced’}    | LogisticRegression |
+|     0.5104191 | {‘C’: 679, ‘class\_weight’: ‘balanced’}    | LogisticRegression |
+|     0.4753636 | {‘max\_depth’: 560, ‘n\_estimators’: 94}   | RandomForest       |
+|     0.4747108 | {‘max\_depth’: 946, ‘n\_estimators’: 161}  | RandomForest       |
+|     0.4733365 | {‘max\_depth’: 1793, ‘n\_estimators’: 168} | RandomForest       |
+|     0.4714657 | {‘max\_depth’: 1408, ‘n\_estimators’: 43}  | RandomForest       |
+|     0.4494986 | {‘max\_depth’: 736, ‘n\_estimators’: 20}   | RandomForest       |
 |     0.3958155 | {‘C’: 158, ‘class\_weight’: ‘none’}        | LogisticRegression |
 |     0.3958155 | {‘C’: 596, ‘class\_weight’: ‘none’}        | LogisticRegression |
 
 Table 2. F1 score with optimized hyperpamaters for each model
 
-Based on the result above, we find that although `LogisticRegression` is
-a better model to use, the f1 score is only around 0.5. It is not a very
-good score, which means the prediction from this model is not as
-reliable. To further improve this model in future, it is a good idea to
-take consideration of other hyperparameters or apply feature engineering
-to add more useful features to help with prediction. Furthermore, we may
-also want to look at the confusion matrix of model performance and try
-to minimize the false negative in the prediction by changing the
-threshold of the model.
+With the best performing model, we tried to predict on our test data and
+the f1 score on the test set is xxx. Based on the result above, we find
+that although `LogisticRegression` is the better model to use between
+the two, the f1 score is only around 0.5 which suggests that there is
+still a lot of errors in prediction.
 
-It is a fair score but there is for sure some room for improvement. One
-possible way is to do feature enginnering. We only have 23 features for
-the model to learn, and based on our results from feature selection,
-whether or not we apply feature selection does not affect our score by a
-lot. This may because we do not have lots of features and what our model
-could learn is limited. Therefore, future reseach may consider to create
-new features that would help the model to better learn the pattern, or
-if possible, gather more data for better prediction score.
+<div class="figure">
+
+<img src="../results/figures/confusionmtx.png" alt="Figure 4: Confusion matrix for LogistricRegression" width="50%" />
+
+<p class="caption">
+
+Figure 4: Confusion matrix for LogistricRegression
+
+</p>
+
+</div>
+
+If we look at the confusion matrix from the test set, we can see that of
+7,500 examples, the model predicted slightly less than 75% of these
+correctly. However, we also note that it falsely predicted that more
+than 1,200 customers (15%) would pay their next bill when in fact they
+would not. This is important as if this model were to be used by a bank,
+it would not flag these customers for intervention. The more than 600
+customers that were predicted to default when they actually would not is
+a less risky error. A 15% ‘miss’ rate is a substantial error that may
+not make this model acceptable for deployment as a prediction tool.
+
+With the above in mind, we propose some future improvements to the
+model. One improvement is to perform feature engineering. We only have
+23 features for the model to learn, which is very limited for problem
+like this. Future research may consider to create new features that
+would help the model to better learn the pattern, or if possible, to
+gather from customers such as ccupation, known net asset value, bank
+account value, number of credit cards, etc. A second improvement is to
+look at obtaining more data. The data currently is limited to a very
+small population (banks in Taiwan) over a short period of time (6 months
+in 2005). By expanding this over more countries and over additional
+years may allow for the inclusion features that capture external events
+such as recessions and other economic events that may be more predictive
+of defaults.
 
 ## References
 
-<div id="refs" class="references hanging-indent">
+<div id="refs" class="references">
 
 <div id="ref-docopt">
 
