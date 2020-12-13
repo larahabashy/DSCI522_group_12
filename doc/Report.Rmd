@@ -2,10 +2,13 @@
 title: "Credit Card Default Prediction"
 author: "Selma Duric, Lara Habashy, Hazel Jiang</br>"
 date: "12/12/2020"
-bibliography: reference.bib
-output: 
+output:
+  html_document:
+    toc: yes
+    df_print: paged
   github_document:
-    toc: TRUE
+    toc: yes
+bibliography: reference.bib
 ---
 
 ```{r setup, include=FALSE}
