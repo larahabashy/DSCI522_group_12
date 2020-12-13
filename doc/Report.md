@@ -20,7 +20,7 @@ payment for the next month in order to lower the risk for banks to issue
 credit card to more reliable clients. The result indicates that
 `LogisticRegression` with optimized hyperparameter
 `class_weight='balanced'` and `C=382` is the best performing model. We
-get f1 score of xxx for prediction on test data. It is a fair score but
+get f1 score of 0.5 for prediction on test data. It is a fair score but
 there is room for improvement. We suggest future research to apply
 feature engineering and to obtain more data for a better predication
 accuracy.
@@ -207,7 +207,7 @@ The best performing model is `Logistic Regression` with
 Table 2. F1 score with optimized hyperpamaters for each model
 
 With the best performing model, we tried to predict on our test data and
-the f1 score on the test set is xxx. Based on the result above, we find
+the f1 score on the test set is 0.5. Based on the result above, we find
 that although `LogisticRegression` is the better model to use between
 the two, the f1 score is only around 0.5 which suggests that there is
 still a lot of errors in prediction.
