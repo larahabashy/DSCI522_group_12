@@ -1,5 +1,5 @@
 ,Baseline,Random Forest,Logistic Regression
-mean_accuracy_train,0.7788,0.9995,0.7448
-mean_accuracy_validation,0.7788,0.8155,0.7440
-mean_f1_train,0.0000,0.9988,0.5125
-mean_f1_validation,0.0000,0.4707,0.5108
+mean_accuracy_train,0.7788,0.9995,0.7449
+mean_accuracy_validation,0.7788,0.8156,0.7442
+mean_f1_train,0.0000,0.9988,0.5126
+mean_f1_validation,0.0000,0.4694,0.5110
