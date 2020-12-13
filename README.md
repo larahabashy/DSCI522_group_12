@@ -15,7 +15,7 @@ In the exploratory analysis portion, first we explore the data to observe any mi
 Our logistic regression classifier performed with a f1 score on the test data of 0.50. On the 7500 test data cases, it correctly predicted approximately 4500 default payments. However, many true default payments were not detected. As such, we continue to investigate methods to improve the model's accuracy.
 
 ## Report
-The final report can be found [here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/doc/report.md).
+The final report can be found [here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/doc/Report.md).
 
 ## Usage
 To replicate this analysis, clone the GitHub repository, install dependencies and run the following commands from the root directory of this project:
