@@ -147,7 +147,7 @@ Figure 3: Proportion of default payments for different education levels
 A more comprehensive review and analysis of the data is available in our
 EDA report including information about data transformation steps that
 were taken. The EDA report can be found
-[Here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/src/project_eda.md)
+[here](https://github.com/UBC-MDS/DSCI522_group_12/blob/main/src/project_eda.md).
 
 Both a linear classification model `LogisticRegression` and an ensemble
 decision tree classification model. We compared their performance with
@@ -162,7 +162,7 @@ used to perform the analysis: docopt(de Jonge 2018), feather(Wickham
 2019), knitr(Xie 2020), tidyverse(Wickham 2017)and Pandas(team 2020).
 
 The code used to perform the analysis and create this report can be
-found [here](https://github.com/UBC-MDS/DSCI522_group_12/tree/main/src)
+found [here](https://github.com/UBC-MDS/DSCI522_group_12/tree/main/src).
 
 ## Results & Discussion
 
@@ -182,7 +182,7 @@ have an overfitting problem.
 | mean\_f1\_train            |   0.0000 |        0.9988 |              0.5126 |
 | mean\_f1\_validation       |   0.0000 |        0.4694 |              0.5110 |
 
-Table 1.Comparison between accuracy and f1 with default hyperparameters
+Table 1. Comparison between accuracy and f1 with default hyperparameters
 on training set
 
 Since the validation scores were comparable, we then tune
@@ -204,7 +204,7 @@ The best performing model is `Logistic Regression` with
 |     0.3958155 | {‘C’: 158, ‘class\_weight’: ‘none’}        | LogisticRegression |
 |     0.3958155 | {‘C’: 596, ‘class\_weight’: ‘none’}        | LogisticRegression |
 
-Table 2. F1 score with optimized hyperpamaters for each model
+Table 2. F1 score with optimized hyperparameters for each model
 
 With the best performing model, we tried to predict on our test data and
 the f1 score on the test set is 0.5. Based on the result above, we find
@@ -214,11 +214,11 @@ still a lot of errors in prediction.
 
 <div class="figure">
 
-<img src="../results/figures/confusionmtx.png" alt="Figure 4: Confusion matrix for LogistricRegression" width="50%" />
+<img src="../results/figures/confusionmtx.png" alt="Figure 4: Confusion matrix for LogisticRegression on Test Set" width="50%" />
 
 <p class="caption">
 
-Figure 4: Confusion matrix for LogistricRegression
+Figure 4: Confusion matrix for LogisticRegression on Test Set
 
 </p>
 
@@ -236,12 +236,12 @@ not make this model acceptable for deployment as a prediction tool.
 
 With the above in mind, we propose some future improvements to the
 model. One improvement is to perform feature engineering. We only have
-23 features for the model to learn, which is very limited for problem
+23 features for the model to learn, which is very limited for a problem
 like this. Future research may consider to create new features that
-would help the model to better learn the pattern, or if possible, to
-gather from customers such as ccupation, known net asset value, bank
-account value, number of credit cards, etc. A second improvement is to
-look at obtaining more data. The data currently is limited to a very
+would help the model to better learn patterns, or if possible, to gather
+information from customers such as occupation, known net asset value,
+bank account value, number of credit cards, etc. A second improvement is
+to look at obtaining more data. The data currently is limited to a very
 small population (banks in Taiwan) over a short period of time (6 months
 in 2005). By expanding this over more countries and over additional
 years may allow for the inclusion features that capture external events
